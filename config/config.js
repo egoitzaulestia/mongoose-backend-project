@@ -10,3 +10,5 @@ const dbConnection = async () => {
     throw new Error("Error while initizlizing the database");
   }
 };
+
+module.exports = { dbConnection };
