@@ -51,7 +51,7 @@ const UserController = {
       const payload = jwt.verify(token, jwt_secret);
 
       // Find the user by email and update the 'confirmed' field
-      const user = await User.findByIdAndUpdate(
+      const user = await User.findOneAndUpdate(
         { email: payload.email },
         { confirmed: true },
         { new: true } // returns the updated document
