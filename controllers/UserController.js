@@ -2,7 +2,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { jwt_secret } = require("../config/keys");
 
-const UserContreller = {
+const UserController = {
   async register(req, res) {
     try {
       const user = await User.create({ ...req.body, role: "user" });
@@ -15,3 +15,5 @@ const UserContreller = {
     }
   },
 };
+
+module.exports = UserController;
