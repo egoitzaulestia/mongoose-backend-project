@@ -44,6 +44,32 @@ const UserController = {
       //   next(error)
     }
   },
+
+  async confirm(req, res) {
+    try {
+      const token = req.params.emailToken;
+      const payload = jwt.verify(token, jwt_secret);
+
+      // Find the user by email and update the 'confirmed' field
+      await User.findByIdAndUpdate(
+        { email: payload.email },
+        { confirmed: true },
+        { new: true } // returns the updated document
+      );
+
+      if (!user) {
+        return res.status(404).send({ message: "User not found" });
+      }
+
+      res.status(200).send({ message: "User confirmed successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Error while confirming by email",
+        error,
+      });
+    }
+  },
 };
 
 module.exports = UserController;
