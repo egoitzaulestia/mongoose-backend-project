@@ -28,14 +28,31 @@ const authentication = async (req, res, next) => {
   }
 };
 
-const isAdming = async (req, res, next) => {
-  const admins = ["admin", "superadmin"];
+const isAdmin = async (req, res, next) => {
+  try {
+    const admins = ["admin", "superadmin"];
 
-  if (!admins.includes(req.user.role)) {
-    return res.status(403).send({ message: "You do not have permission" });
+    if (!admins.includes(req.user.role)) {
+      return res.status(403).send({ message: "You do not have permission" });
+    }
+
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Authorization error", error });
   }
-
-  next();
 };
+
+// const isAuthor = async (req, res, next) => {
+//   try {
+//     const order = await
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send({
+//       error,
+//       message: "There was an error while checking the authority of the order",
+//     });
+//   }
+// };
 
 module.exports = { authentication, isAdmin };
