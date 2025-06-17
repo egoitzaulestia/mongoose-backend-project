@@ -13,6 +13,14 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// We avoid returning tokens array and password
+UserSchema.methods.toJSON = function () {
+  const user = this._doc;
+  delete user.tokens;
+  delete user.password;
+  return user;
+};
+
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;
