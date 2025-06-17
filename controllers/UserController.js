@@ -147,7 +147,7 @@ const UserController = {
       //     path: "commentIds",
       //   });
 
-      const user = await User.findById(req.user._id);
+      const user = await User.findOne(req.user._id);
 
       res.status(200).send(user);
     } catch (error) {
@@ -160,21 +160,42 @@ const UserController = {
 
   async getById(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params._id });
-
+      //   const user = await User.findById(req.params._id); // ← use findById
+      //   const user = await User.findOne({ _id: req.params._id });
+      const user = await User.findById(req.params._id);
       if (!user) {
-        return res.status(404).send({ message: "User not found" });
+        return res.status(404).json({ message: "User not found" });
       }
-
-      res.status(200).send(user);
+      return res.status(200).json(user);
     } catch (error) {
       console.error(error);
-      res.status(500).send({
-        message: "Error while retriving the user",
+      return res.status(500).json({
+        message: "Error while retrieving the user",
         error,
       });
     }
   },
+
+  //   async getByName(req, res) {
+  //   try {
+  //     const product = await Product.findAll({
+  //       where: {
+  //         name: {
+  //           [Op.like]: `%${req.params.name}%`,
+  //         },
+  //       },
+  //     });
+
+  //     if (product.length === 0) {
+  //       return res.status(404).send({ message: 'No products found' });
+  //     }
+
+  //     res.status(200).send(product);
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).send({ message: 'Error', error });
+  //   }
+  // },
 };
 
 module.exports = UserController;
