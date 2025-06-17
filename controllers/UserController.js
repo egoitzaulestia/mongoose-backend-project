@@ -112,6 +112,34 @@ const UserController = {
       res.status(500).send({ message: "Login error", error });
     }
   },
+
+  async logout(req, res) {
+    try {
+      // Normalize the token
+      const rawToken = req.headers.authorization || "";
+      const token = rawToken.replace(/^Bearer\s+/i, "");
+
+      // Romove the token from the tokens array
+      const result = await User.findByIdAndUpdate(
+        { _id: req.user._id },
+        { $pull: { tokens: token } }
+      );
+
+      // Check if tokens array has been modified
+      if (result.modifiedCount === 0) {
+        return res.status(400).send({
+          message: "You were already logged out or token not found",
+        });
+      }
+
+      res.status(200).send({ message: `Goodbye ${req.user.name} !` });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "There was a problem trying to log out." });
+    }
+  },
 };
 
 module.exports = UserController;
