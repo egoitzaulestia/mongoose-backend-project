@@ -16,12 +16,32 @@ const UserController = {
         confirmed: false,
       });
 
-      res.status(201).send({ message: "User registered successfully", user });
+      const emailToken = jwt.sign({ email: req.body.email }, jwt_secret, {
+        expiresIn: "48h",
+      });
+
+      const url = `http://localhost:3000/users/confirm/${emailToken}`;
+
+      await transporter.sendMail({
+        to: req.body.email,
+        subject: "Confirm your regist",
+        html: `
+          <h3>Welcome, you are almost there </h3>
+          <a href=${url}>Click here to confirm your regist</a>
+        `,
+      });
+
+      res.status(201).send({
+        message: "User registered successfully",
+        user,
+      });
     } catch (error) {
       console.error(error);
-      res
-        .status(500)
-        .send({ message: "Error while trying to regist a user", error });
+      res.status(500).send({
+        message: "Error while trying to regist a user",
+        error,
+      });
+      //   next(error)
     }
   },
 };
