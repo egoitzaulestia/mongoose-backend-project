@@ -143,9 +143,12 @@ const UserController = {
 
   async getInfo(req, res) {
     try {
-      const user = await User.findById(req.user._id).populate({
-        // path: 'commentIds'
-      });
+      //   const user = await User.findById(req.user._id).populate({
+      //     path: "commentIds",
+      //   });
+
+      const user = await User.findById(req.user._id);
+
       res.status(200).send(user);
     } catch (error) {
       console.error(error);

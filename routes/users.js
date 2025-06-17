@@ -7,5 +7,6 @@ router.post("/register", UserController.register);
 router.get("/confirm/:emailToken", UserController.confirm);
 router.post("/login", UserController.login);
 router.delete("/logout", authentication, UserController.logout);
+router.get("/info", authentication, UserController.getInfo);
 
 module.exports = router;
