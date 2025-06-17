@@ -70,6 +70,26 @@ const UserController = {
       });
     }
   },
+
+  async login(req, res) {
+    try {
+      const user = await User.findOne({
+        email: req.body.email,
+      });
+
+      const token = jwt.sign({ _id: user._id }, jwt_secret, {
+        expiresIn: "7d",
+      });
+
+      if (user.tokens.length > 3) user.tokens.shift();
+      await user.save();
+
+      res.status(200).send({ message: `Welcome ${user.name} :)`, token });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Login error", error });
+    }
+  },
 };
 
 module.exports = UserController;
