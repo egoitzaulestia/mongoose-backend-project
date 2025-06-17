@@ -140,6 +140,20 @@ const UserController = {
         .send({ message: "There was a problem trying to log out." });
     }
   },
+
+  async getInfo(req, res) {
+    try {
+      const user = await User.findById(req.user._id).populate({
+        // path: 'commentIds'
+      });
+      res.status(200).send(user);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "Error while retriving user data", error });
+    }
+  },
 };
 
 module.exports = UserController;
