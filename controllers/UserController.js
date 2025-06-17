@@ -157,6 +157,24 @@ const UserController = {
         .send({ message: "Error while retriving user data", error });
     }
   },
+
+  async getById(req, res) {
+    try {
+      const user = await User.findOne({ _id: req.params._id });
+
+      if (!user) {
+        return res.status(404).send({ message: "User not found" });
+      }
+
+      res.status(200).send(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Error while retriving the user",
+        error,
+      });
+    }
+  },
 };
 
 module.exports = UserController;
