@@ -73,15 +73,37 @@ const UserController = {
 
   async login(req, res) {
     try {
-      const user = await User.findOne({
-        email: req.body.email,
-      });
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).send({ message: "Email and password required" });
+      }
+
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found. Please register first.",
+        });
+      }
+
+      if (!user.confirmed) {
+        return res
+          .status(400)
+          .send({ message: "Please confirm your email before logging in." });
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(400).send({ message: "Incorrect user or password" });
+      }
 
       const token = jwt.sign({ _id: user._id }, jwt_secret, {
         expiresIn: "7d",
       });
 
       if (user.tokens.length > 3) user.tokens.shift();
+      user.tokens.push(token);
+      // user.tokens = [...user.tokens, token].slice(-3); // Othre option to story the token in the array
       await user.save();
 
       res.status(200).send({ message: `Welcome ${user.name} :)`, token });
