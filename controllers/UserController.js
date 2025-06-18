@@ -214,9 +214,9 @@ const UserController = {
     }
   },
 
-  async update(res, req) {
+  async update(req, res) {
     try {
-      const user = await User.findByIdAndUpadate(
+      const user = await User.findByIdAndUpdate(
         req.params._id,
         {
           $set: req.body,
