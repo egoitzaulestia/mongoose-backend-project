@@ -176,21 +176,98 @@ const UserController = {
     }
   },
 
-  //   async getByName(req, res) {
+  async getByName(req, res) {
+    try {
+      const product = await Product.findAll({
+        where: {
+          name: {
+            [Op.like]: `%${req.params.name}%`,
+          },
+        },
+      });
+
+      if (product.length === 0) {
+        return res.status(404).send({ message: "No products found" });
+      }
+
+      res.status(200).send(product);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Error", error });
+    }
+  },
+
+  async getByName(req, res) {
+    try {
+      const { name } = req.params;
+
+      const users = await User.find({
+        name: { $regex: name, $options: "i" },
+      });
+
+      if (users.length === 0) {
+        return res
+          .status(404)
+          .send({ message: `No users found matching "${name}"` });
+      }
+      res.status(200).send(users);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "Error while seraching user by name", error });
+    }
+  },
+
+  // async getAll(req, res) {
   //   try {
-  //     const product = await Product.findAll({
-  //       where: {
-  //         name: {
-  //           [Op.like]: `%${req.params.name}%`,
-  //         },
-  //       },
+  //     const products = await Product.findAll({
+  //       include: [
+  //         { model: Category, through: { attributes: [] } },
+  //         // { model: Order, through: { attributes: [] } },
+  //         { model: Review },
+  //       ],
   //     });
 
-  //     if (product.length === 0) {
-  //       return res.status(404).send({ message: 'No products found' });
+  //     res.status(200).send(products);
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(200).send({ message: "Error", error });
+  //   }
+  // },
+
+  // async update(req, res) {
+  //   try {
+  //     const [updated] = await Product.update(req.body, {
+  //       where: { id: req.params.id },
+  //     });
+
+  //     if (updated === 0) {
+  //       return res.status(404).send({ message: "Product not found" });
+  //     }
+  //     const updatedProduct = await Product.findByPk(req.params.id);
+  //     await updatedProduct.addCategory(req.body.CategoryId);
+  //     res.status(200).send({
+  //       message: "Product updated",
+  //       product: updatedProduct,
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).send({ message: "Error", error });
+  //   }
+  // },
+
+  //   async delete(req, res) {
+  //   try {
+  //     const deleted = await Product.destroy({
+  //       where: { id: req.params.id },
+  //     });
+
+  //     if (deleted === 0) {
+  //       return res.status(404).send({ message: 'Product not found' });
   //     }
 
-  //     res.status(200).send(product);
+  //     res.status(200).send({ message: 'The product has been deleted' });
   //   } catch (error) {
   //     console.error(error);
   //     res.status(500).send({ message: 'Error', error });
