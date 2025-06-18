@@ -141,6 +141,7 @@ const UserController = {
     }
   },
 
+  // (ongoing) needs to be adapetd to get post and comments
   async getInfo(req, res) {
     try {
       //   const user = await User.findById(req.user._id).populate({
@@ -158,6 +159,7 @@ const UserController = {
     }
   },
 
+  // (ongoing) needs to be adapetd to get post and comments
   async getById(req, res) {
     try {
       //   const user = await User.findById(req.params._id); // ← use findById
@@ -198,10 +200,11 @@ const UserController = {
     }
   },
 
+  // (perhaps) needs to be adapetd to get post and comments
   async getAll(req, res) {
     try {
       const users = await User.find();
-      res.status(200).senc(users);
+      res.status(200).send(users);
     } catch (error) {
       console.error(error);
       res.status(500).send({
@@ -210,23 +213,6 @@ const UserController = {
       });
     }
   },
-
-  // async getAll(req, res) {
-  //   try {
-  //     const products = await Product.findAll({
-  //       include: [
-  //         { model: Category, through: { attributes: [] } },
-  //         // { model: Order, through: { attributes: [] } },
-  //         { model: Review },
-  //       ],
-  //     });
-
-  //     res.status(200).send(products);
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(200).send({ message: "Error", error });
-  //   }
-  // },
 
   // async update(req, res) {
   //   try {
