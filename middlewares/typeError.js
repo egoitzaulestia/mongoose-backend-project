@@ -23,7 +23,7 @@ const typeError = (err, req, res, next) => {
     });
   }
 
-  console.error(error);
+  console.error(err);
   res.status(500).send({
     message: "There was a problem",
     error: err,
