@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const { jwt_secret } = require("../config/keys");
 const transporter = require("../config/nodemailer");
 
+//TO DO -> work in validtions (404, etc.) ...
+
 const UserController = {
   async register(req, res) {
     try {
