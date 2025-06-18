@@ -214,6 +214,22 @@ const UserController = {
     }
   },
 
+  async delete(req, res) {
+    try {
+      const user = await User.findByIdAndDelete(req.params._id);
+      res.status(204).send({
+        message: "User deleted",
+        user,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Server error while deleting the user",
+        error,
+      });
+    }
+  },
+
   // async update(req, res) {
   //   try {
   //     const [updated] = await Product.update(req.body, {
