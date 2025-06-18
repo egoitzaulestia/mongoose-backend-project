@@ -54,6 +54,10 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+UserSchema.index({
+  name: "text",
+});
+
 // We avoid returning tokens array and password
 UserSchema.methods.toJSON = function () {
   const userObject = this.toObject(); // This is safer than accessing ._doc directly
