@@ -198,6 +198,19 @@ const UserController = {
     }
   },
 
+  async getAll(req, res) {
+    try {
+      const users = await User.find();
+      res.status(200).senc(users);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        messgae: "It was an erro in the server while retrieving the users",
+        error,
+      });
+    }
+  },
+
   // async getAll(req, res) {
   //   try {
   //     const products = await Product.findAll({
