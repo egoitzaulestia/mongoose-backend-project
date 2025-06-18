@@ -214,6 +214,30 @@ const UserController = {
     }
   },
 
+  async update(res, req) {
+    try {
+      const user = await User.findByIdAndUpadate(
+        req.params._id,
+        {
+          $set: req.body,
+          $inc: { __v: 1 },
+        },
+        { new: true }
+      );
+
+      res.status(200).send({
+        message: "User updated successfully",
+        user,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Server error while updating user information",
+        error,
+      });
+    }
+  },
+
   async delete(req, res) {
     try {
       const user = await User.findByIdAndDelete(req.params._id);
@@ -229,44 +253,6 @@ const UserController = {
       });
     }
   },
-
-  // async update(req, res) {
-  //   try {
-  //     const [updated] = await Product.update(req.body, {
-  //       where: { id: req.params.id },
-  //     });
-
-  //     if (updated === 0) {
-  //       return res.status(404).send({ message: "Product not found" });
-  //     }
-  //     const updatedProduct = await Product.findByPk(req.params.id);
-  //     await updatedProduct.addCategory(req.body.CategoryId);
-  //     res.status(200).send({
-  //       message: "Product updated",
-  //       product: updatedProduct,
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).send({ message: "Error", error });
-  //   }
-  // },
-
-  //   async delete(req, res) {
-  //   try {
-  //     const deleted = await Product.destroy({
-  //       where: { id: req.params.id },
-  //     });
-
-  //     if (deleted === 0) {
-  //       return res.status(404).send({ message: 'Product not found' });
-  //     }
-
-  //     res.status(200).send({ message: 'The product has been deleted' });
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).send({ message: 'Error', error });
-  //   }
-  // },
 };
 
 module.exports = UserController;
