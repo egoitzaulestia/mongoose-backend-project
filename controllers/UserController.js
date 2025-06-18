@@ -7,7 +7,7 @@ const transporter = require("../config/nodemailer");
 //TO DO -> work in validtions (404, etc.) ...
 
 const UserController = {
-  async register(req, res) {
+  async register(req, res, next) {
     try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
@@ -43,7 +43,8 @@ const UserController = {
         message: "Error while trying to regist a user",
         error,
       });
-      //   next(error)
+      // error.origin = 'user'
+      // next(error)
     }
   },
 
