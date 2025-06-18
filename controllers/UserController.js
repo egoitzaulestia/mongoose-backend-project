@@ -178,27 +178,6 @@ const UserController = {
 
   async getByName(req, res) {
     try {
-      const product = await Product.findAll({
-        where: {
-          name: {
-            [Op.like]: `%${req.params.name}%`,
-          },
-        },
-      });
-
-      if (product.length === 0) {
-        return res.status(404).send({ message: "No products found" });
-      }
-
-      res.status(200).send(product);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: "Error", error });
-    }
-  },
-
-  async getByName(req, res) {
-    try {
       const { name } = req.params;
 
       const users = await User.find({
