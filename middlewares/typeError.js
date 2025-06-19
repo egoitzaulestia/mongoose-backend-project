@@ -23,6 +23,13 @@ const typeError = (err, req, res, next) => {
     });
   }
 
+  if (err.origin === "user") {
+    console.warn("Error came from user registration.");
+    return res.status(400).send({
+      message: "There was an error while trying to regist a user",
+    });
+  }
+
   console.error(err);
   res.status(500).send({
     message: "There was a problem",

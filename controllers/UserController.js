@@ -38,13 +38,13 @@ const UserController = {
         user,
       });
     } catch (error) {
-      console.error(error);
-      res.status(500).send({
-        message: "Error while trying to regist a user",
-        error,
-      });
-      // error.origin = 'user'
-      // next(error)
+      // console.error(error);
+      // res.status(500).send({
+      //   message: "Error while trying to regist a user",
+      //   error,
+      // });
+      error.origin = "user";
+      next(error);
     }
   },
 
