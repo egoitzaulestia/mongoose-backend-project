@@ -101,6 +101,19 @@ const PostController = {
       });
     }
   },
+
+  async getById(req, res) {
+    try {
+      const post = await Post.findById(req.params._id);
+      res.status(200).send(post);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Server error while searching post by ID",
+        error,
+      });
+    }
+  },
 };
 
 module.exports = PostController;
