@@ -82,8 +82,16 @@ const PostController = {
       if (req.params.title.length > 150) {
         return res.status(400).send({ message: "Too long search..." });
       }
-      const title = new RegExp(req.params.title, "i");
-      const posts = await Post.find({ title });
+      //   const posts = await Post.find({
+      //     $text: {
+      //       $search: `"${req.params.title}"`,
+      //     },
+      //   });
+
+      const posts = await Post.find({
+        title: { $regex: req.params.title, $options: "i" },
+      });
+
       res.status(200).send(posts);
     } catch (error) {
       console.error(error);
