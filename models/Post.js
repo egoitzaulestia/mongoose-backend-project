@@ -21,7 +21,7 @@ const PostSchema = new mongoose.Schema(
     author: {
       type: ObjectId,
       ref: "User",
-      required: true,
+      required: [true, "Author is required"],
     },
 
     title: {
@@ -32,7 +32,7 @@ const PostSchema = new mongoose.Schema(
 
     content: {
       type: String,
-      required: true,
+      required: [true, "Content is required"],
       minlength: 1,
       trim: true,
     },
