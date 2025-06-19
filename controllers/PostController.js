@@ -76,6 +76,23 @@ const PostController = {
       });
     }
   },
+
+  async getByTitle(req, res) {
+    try {
+      if (req.params.title.length > 150) {
+        return res.status(400).send({ message: "Too long search..." });
+      }
+      const title = new RegExp(req.params.title, "i");
+      const posts = await Post.find({ title });
+      res.status(200).send(posts);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Server error while shearching titles",
+        error,
+      });
+    }
+  },
 };
 
 module.exports = PostController;
