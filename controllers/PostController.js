@@ -38,6 +38,7 @@ const PostController = {
     }
   },
 
+  // NOTE: Improve validation
   async update(req, res) {
     try {
       const post = await Post.findByIdAndUpdate(
@@ -57,6 +58,21 @@ const PostController = {
       res.status(500).send({
         message: "Error while updating the post",
         error,
+      });
+    }
+  },
+
+  async delete(req, res) {
+    try {
+      const post = await Post.findByIdAndDelete(req.params._id);
+      res.status(200).send({
+        message: "Post deleted successfully",
+        post,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Server error while deleting the post",
       });
     }
   },
