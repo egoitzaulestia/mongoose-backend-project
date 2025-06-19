@@ -5,5 +5,6 @@ const { authentication } = require("../middlewares/authentication");
 
 router.post("/create", authentication, PostController.create);
 router.get("/", PostController.getAll);
+router.get("/id/:_id", authentication, PostController.update);
 
 module.exports = router;
