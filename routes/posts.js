@@ -15,6 +15,6 @@ router.get("/id/:_id", PostController.getById);
 router.post("/:postId/like", authentication, PostController.likePost);
 
 // Unlike a post
-// router.delete("/:postId/like", authentication, PostController.unlikePost);
+router.delete("/:postId/like", authentication, PostController.unlikePost);
 
 module.exports = router;
