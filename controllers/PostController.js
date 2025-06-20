@@ -116,28 +116,101 @@ const PostController = {
     }
   },
 
-  async like(req, res) {
+  async likePost(req, res) {
     try {
-      const post = await Post.findByIdAndUpdate(
-        req.params._id,
-        { $push: { likes: req.user._id } },
-        { new: true }
-      );
+      const { postId } = req.params;
+      const userId = req.user._id;
 
-      // await User.findByIdAndUpdate(
-      //   req.user._id,
-      //   { $push: { readList: req.params._id } },
-      //   { new: true }
-      // );
-
-      res.status(200).send(post);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({
-        message: "Server error while giving a like",
+      // First, check if already exist
+      const already = await Post.exists({
+        _id: postId,
+        "likes.userId": userId,
       });
+      if (already) {
+        return res.status(400).send({
+          message: "You have already liked this post.",
+        });
+      }
+
+      // Add the like
+      const post = await Post.findByIdAndUpdate(
+        postId,
+        { $push: { likes: { userId } } },
+        { new: true }
+      ).populate("likes.userId", "name");
+
+      res.status(200).send({ message: "Post liked", post });
+    } catch (error) {
+      console.error("LikePost error:", error);
+      res.status(500).send({ message: "Error while liking post", error: err });
     }
   },
+
+  // // POST /posts/:postId/like
+  // async likePost(req, res) {
+  //   try {
+  //     const { postId } = req.params;
+  //     const userId = req.user._id;
+
+  //     // First, check if already liked
+  //     const already = await Post.exists({
+  //       _id: postId,
+  //       "likes.userId": userId,
+  //     });
+  //     if (already) {
+  //       return res
+  //         .status(400)
+  //         .json({ message: "You have already liked this post." });
+  //     }
+
+  //     // Add the like
+  //     const post = await Post.findByIdAndUpdate(
+  //       postId,
+  //       { $push: { likes: { userId } } },
+  //       { new: true }
+  //     ).populate("likes.userId", "name");
+
+  //     return res.status(200).json({ message: "Post liked.", post });
+  //   } catch (err) {
+  //     console.error("likePost error:", err);
+  //     return res
+  //       .status(500)
+  //       .json({ message: "Error while liking post.", error: err });
+  //   }
+  // },
+
+  // // DELETE /posts/:postId/like
+  // async unlikePost(req, res) {
+  //   try {
+  //     const { postId } = req.params;
+  //     const userId = req.user._id;
+
+  //     // Ensure the like exists
+  //     const already = await Post.exists({
+  //       _id: postId,
+  //       "likes.userId": userId,
+  //     });
+  //     if (!already) {
+  //       return res
+  //         .status(400)
+  //         .json({ message: "You have not liked this post." });
+  //     }
+
+  //     // Remove the like
+  //     const post = await Post.findByIdAndUpdate(
+  //       postId,
+  //       { $pull: { likes: { userId } } },
+  //       { new: true }
+  //     ).populate("likes.userId", "name");
+
+  //     return res.status(200).json({ message: "Like removed.", post });
+  //   } catch (err) {
+  //     console.error("unlikePost error:", err);
+  //     return res
+  //       .status(500)
+  //       .json({ message: "Error while unliking post.", error: err });
+  //   }
+  // },
 };
 
 module.exports = PostController;

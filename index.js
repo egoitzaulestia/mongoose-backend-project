@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001;
 const { dbConnection } = require("./config/db");
 const { typeError } = require("./middlewares/typeError");
 
