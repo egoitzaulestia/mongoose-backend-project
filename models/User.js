@@ -50,6 +50,8 @@ const UserSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+
+    readList: [{ type: ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
