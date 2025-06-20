@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
 
 const PostController = {
   async create(req, res) {
@@ -111,6 +112,23 @@ const PostController = {
       res.status(500).send({
         message: "Server error while searching post by ID",
         error,
+      });
+    }
+  },
+
+  async like(req, res) {
+    try {
+      const post = await Post.findByIdAndUpdate(
+        req.params._id,
+        { $push: { likes: req.user._id } },
+        { new: true }
+      );
+
+      res.status(200).send(post);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Server error while giving a like",
       });
     }
   },
