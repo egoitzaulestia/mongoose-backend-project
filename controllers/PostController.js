@@ -124,6 +124,11 @@ const PostController = {
         { new: true }
       );
 
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { $push: { readList: req.params._id } },
+        { new: true }
+      );
       res.status(200).send(post);
     } catch (error) {
       console.error(error);
