@@ -80,7 +80,44 @@ const CommentController = {
     }
   },
 
-  async getCommentsByPost(req, res) {},
+  async getCommentsByPost(req, res) {
+    try {
+      const { postId } = req.params;
+      const { page = 1, limit = 10 } = req.query;
+
+      if (!ObjectId.isValid(postId)) {
+        return res.status(400).json({ message: "Invalid postId format" });
+      }
+
+      const postExists = await Post.exists({ _id: postId });
+      if (!postExists) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      const comments = await Comment.find({ postId }).populate(
+        "author",
+        "name email"
+      );
+      sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(parseInt(limit));
+
+      const total = await Comment.countDocuments({ postId });
+
+      res.status(200).json({
+        total,
+        page: parseInt(page),
+        pages: Math.ceil(total / limit),
+        comments,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message: "Server error while retrieving comments for the post",
+        error,
+      });
+    }
+  },
 };
 
 module.exports = CommentController;
