@@ -17,7 +17,14 @@ router.post("/:postId/like", authentication, PostController.likePost);
 // Unlike a post
 router.delete("/:postId/like", authentication, PostController.unlikePost);
 
-// Comments
+// GET all comments
 router.post("/:postId/comments", authentication, CommentController.create);
+
+// GET all comments from a post
+router.get(
+  "/:postId/comments",
+  authentication,
+  CommentController.getAllComments
+);
 
 module.exports = router;
