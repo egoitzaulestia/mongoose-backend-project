@@ -5,7 +5,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const transporter = require("../config/nodemailer");
 
 //TO DO -> work in validtions (404, etc.) ...
-
 const UserController = {
   async register(req, res, next) {
     try {
