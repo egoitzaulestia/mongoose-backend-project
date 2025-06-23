@@ -57,13 +57,30 @@ const CommentController = {
       const { page = 1, limit = 10 } = req.query;
 
       const comments = await Comment.find()
-        // .populate()
+        .populate("author", "name email")
+        .populate("postId", "title")
+        .sort({ createdAt: -1 })
         .limit(limit)
         .skip((page - 1) * limit);
 
-      res.status(200).json({ comments });
-    } catch (error) {}
+      const total = await Comment.countDocuments();
+
+      res.status(200).json({
+        total,
+        page: parseInt(page),
+        pages: Math.ceil(total / limit),
+        comments,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message: "Server error while retriving all comments of the database",
+        error,
+      });
+    }
   },
+
+  async getCommentsByPost(req, res) {},
 };
 
 module.exports = CommentController;
