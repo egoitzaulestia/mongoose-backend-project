@@ -1,7 +1,8 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { jwt_secret } = require("../config/keys");
+// const { jwt_secret } = require("../config/keys");
+const JWT_SECRET = process.env.JWT_SECRET;
 const transporter = require("../config/nodemailer");
 
 //TO DO -> work in validtions (404, etc.) ...
@@ -18,7 +19,7 @@ const UserController = {
         confirmed: false,
       });
 
-      const emailToken = jwt.sign({ email: req.body.email }, jwt_secret, {
+      const emailToken = jwt.sign({ email: req.body.email }, JWT_SECRET, {
         expiresIn: "48h",
       });
 
@@ -51,7 +52,7 @@ const UserController = {
   async confirm(req, res) {
     try {
       const token = req.params.emailToken;
-      const payload = jwt.verify(token, jwt_secret);
+      const payload = jwt.verify(token, JWT_SECRET);
 
       // Find the user by email and update the 'confirmed' field
       const user = await User.findOneAndUpdate(
@@ -100,7 +101,7 @@ const UserController = {
         return res.status(400).send({ message: "Incorrect user or password" });
       }
 
-      const token = jwt.sign({ _id: user._id }, jwt_secret, {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
 

@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const { jwt_secret } = require("../config/keys");
+// const { jwt_secret } = require("../config/keys");
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const authentication = async (req, res, next) => {
   try {
@@ -10,7 +11,7 @@ const authentication = async (req, res, next) => {
       return res.status(401).send({ message: "Not valid token" });
     }
 
-    const payload = jwt.verify(token, jwt_secret);
+    const payload = jwt.verify(token, JWT_SECRET);
     const user = await User.findOne({ _id: payload._id, tokens: token });
 
     if (!user) {
