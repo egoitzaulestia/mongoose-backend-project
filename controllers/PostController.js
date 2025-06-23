@@ -116,29 +116,6 @@ const PostController = {
     }
   },
 
-  // async like(req, res) {
-  //   try {
-  //     const post = await Post.findByIdAndUpdate(
-  //       req.params._id,
-  //       { $push: { likes: { userId: req.user._id } } },
-  //       { new: true }
-  //     );
-
-  //     // await User.findByIdAndUpdate(
-  //     //   req.user._id,
-  //     //   { $push: { readList: req.params._id } },
-  //     //   { new: true }
-  //     // );
-
-  //     res.status(200).send(post);
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).send({
-  //       message: "Server error while giving a like",
-  //     });
-  //   }
-  // },
-
   async likePost(req, res) {
     try {
       const { postId } = req.params;
