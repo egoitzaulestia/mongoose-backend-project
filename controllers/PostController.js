@@ -29,7 +29,7 @@ const PostController = {
         .limit(limit)
         .skip((page - 1) * limit);
 
-      res.status(200).send(posts);
+      res.status(200).json({ posts });
     } catch (error) {
       console.error(error);
       res.status(500).send({

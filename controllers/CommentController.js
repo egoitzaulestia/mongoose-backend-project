@@ -50,6 +50,20 @@ const CommentController = {
       });
     }
   },
+
+  async getAllComments(req, res) {
+    try {
+      // pagination method for the posts
+      const { page = 1, limit = 10 } = req.query;
+
+      const comments = await Comment.find()
+        // .populate()
+        .limit(limit)
+        .skip((page - 1) * limit);
+
+      res.status(200).json({ comments });
+    } catch (error) {}
+  },
 };
 
 module.exports = CommentController;
