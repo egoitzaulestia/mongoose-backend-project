@@ -60,4 +60,6 @@ CommentSchema.methods.toJSON = function () {
   return commentObject;
 };
 
-module.exports = mongoose.model("Comment", CommentSchema);
+const Comment = mongoose.model("Comment", CommentSchema);
+
+module.exports = Comment;
