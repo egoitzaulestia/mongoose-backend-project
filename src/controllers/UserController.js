@@ -161,6 +161,57 @@ const UserController = {
     }
   },
 
+  async getProfile(req, res) {
+    try {
+      const meId = req.user._id;
+
+      // Grab fresh user doc, populating follower/following names
+      const me = await User.findById(meId)
+        .select("name email followers following") // only the fields we need
+        .populate("followers", "name") // array of { _id, name }
+        .populate("following", "name");
+
+      if (!me) {
+        return res.status(404).json({
+          message: "User not found.",
+        });
+      }
+
+      // Fetch my posts (just ids, titles, dates)
+      const myPosts = await Post.find({ author: meId })
+        .sort({ createdAt: -1 })
+        .select("_id title createdAt");
+
+      // Fetch 'my' comments, incliding which post
+      const myComments = await Comment.find({ author: meId })
+        .sort({ createdAt: -1 })
+        .select("_id content createdAt postId")
+        .populate("postId", "title"); // just the post title
+
+      return res.status(200).json({
+        user: {
+          _id: me._id,
+          name: me.name,
+          email: me.email,
+        },
+        stats: {
+          followersCount: me.followers.length,
+          followingCount: me.following.length,
+        },
+        followers: me.followers, // [{ _id, name }, ...]
+        folliwing: me.following, // [{ _id, name }, ...]
+        posts: myPosts, // [{ _id, title, createdAt }, ...]
+        comments: myComments, // [{ _id, content, createdAt, postId:{_id, title}, ...}]
+      });
+    } catch (err) {
+      console.error("UserController.getProfile error:", err);
+      res.status(500).json({
+        message: "Server error",
+        error: err,
+      });
+    }
+  },
+
   // (ongoing) needs to be adapetd to get post and comments
   async getById(req, res) {
     try {
