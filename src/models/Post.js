@@ -55,11 +55,21 @@ const PostSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+PostSchema.virtual("comments", {
+  ref: "Comment", // the model to use
+  localField: "_id", // find comments where `postId` === `_id`
+  foreignField: "postId", // in Comment shcema
+  justOne: false, // we want an array
+});
+
 // Full-text search index on both 'title' and 'content'
 PostSchema.index({
   title: "text",
   content: "text",
 });
+
+PostSchema.set("toObject", { virtuals: true });
+PostSchema.set("toJSON", { virtuals: true });
 
 const Post = mongoose.model("Post", PostSchema);
 
