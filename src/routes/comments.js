@@ -7,4 +7,6 @@ router.get("/", CommentController.getAllComments);
 // Like a comment
 router.post("/:commentId/like", CommentController.likeComment);
 
+// Unlike a comment
+
 module.exports = router;

@@ -172,6 +172,49 @@ const CommentController = {
       });
     }
   },
+
+  // DELETE /comments/:commentId/like
+  async unlikeComment(req, res) {
+    try {
+      const { commentId } = req.params;
+      const userId = req.user._id;
+
+      // Validate ID
+      if (!ObjectId.isValid(commentId)) {
+        return res.status(400).json({ message: "Invalid commentId" });
+      }
+
+      // Ensure like exists
+      const already = await Comment.exists({
+        _id: commentId,
+        "likes.userId": userId,
+      });
+      if (!already) {
+        return res
+          .status(400)
+          .json({ message: "You have't liked this comment." });
+      }
+
+      // Pull the like subdoc
+      const comment = await Comment.findByIdAndUpdate(
+        commentId,
+        {
+          $pull: { likes: { userId } },
+        },
+        { new: true }
+      ).pupulate("likes.userId", "name");
+
+      return res.status(200).json({
+        message: "Comment unliked",
+        comment,
+      });
+    } catch (err) {
+      return res.status(200).json({
+        message: "Server error while unliking comment",
+        error: err,
+      });
+    }
+  },
 };
 
 module.exports = CommentController;
