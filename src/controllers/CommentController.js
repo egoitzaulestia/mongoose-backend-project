@@ -159,6 +159,11 @@ const CommentController = {
         },
         { new: true }
       ).populate("likes.userId", "name"); // show who liked (we can omit this later)
+
+      return res.status(200).json({
+        message: "Comment liked",
+        comment,
+      });
     } catch (err) {
       console.error("CommentController.likeComment error:", err);
       return res.status(500).json({
