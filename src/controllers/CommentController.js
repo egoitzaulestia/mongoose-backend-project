@@ -118,6 +118,55 @@ const CommentController = {
       });
     }
   },
+
+  // POST /comments/:commentId/like
+  async likeComment(req, res) {
+    try {
+      const { commentId } = req.params;
+      const userId = req.user._id;
+
+      // Validate ID
+      if (!ObjectId.isValid(commentId)) {
+        return res.status(400).json({
+          message: "Invalid commentId",
+        });
+      }
+
+      // Ensure the comment exists
+      const exists = await Comment.exists({ _id: commentId });
+      if (!exists) {
+        return res.status(404).json({
+          message: "Comment not found",
+        });
+      }
+
+      // Check already liked
+      const already = await Comment.exists({
+        _id: commentId,
+        "likes.userId": userId,
+      });
+      if (already) {
+        return res.status(400).json({
+          message: "You've already liked this comment",
+        });
+      }
+
+      // Push the like subdoc
+      const comment = await Comment.findByIdAndUpdate(
+        commentId,
+        {
+          $push: { likes: { userId } },
+        },
+        { new: true }
+      ).populate("likes.userId", "name"); // show who liked (we can omit this later)
+    } catch (err) {
+      console.error("CommentController.likeComment error:", err);
+      return res.status(500).json({
+        message: "Server error while liking comment",
+        error: err,
+      });
+    }
+  },
 };
 
 module.exports = CommentController;
