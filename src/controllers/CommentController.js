@@ -202,14 +202,14 @@ const CommentController = {
           $pull: { likes: { userId } },
         },
         { new: true }
-      ).pupulate("likes.userId", "name");
+      ).populate("likes.userId", "name");
 
       return res.status(200).json({
         message: "Comment unliked",
         comment,
       });
     } catch (err) {
-      return res.status(200).json({
+      return res.status(500).json({
         message: "Server error while unliking comment",
         error: err,
       });
