@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
+const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const UserSchema = new mongoose.Schema(
   {
@@ -50,6 +51,20 @@ const UserSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+
+    following: [
+      {
+        type: ObjectId,
+        ref: "User",
+      },
+    ],
+
+    followers: [
+      {
+        type: ObjectId,
+        ref: "User",
+      },
+    ],
 
     // readList: [{ type: ObjectId, ref: "Post" }],
   },

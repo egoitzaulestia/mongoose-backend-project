@@ -255,6 +255,55 @@ const UserController = {
       });
     }
   },
+
+  async follow(req, res) {
+    try {
+      const meId = req.user._id;
+      const otherId = req.params.id;
+
+      if (meId.equals(otherId)) {
+        return res.status(400).json({
+          message: "You cannot follow yourself.",
+        });
+      }
+
+      // ensure both exist
+      const [me, other] = await Promise.all([
+        User.findById(meId),
+        User.findById(otherId),
+      ]);
+      if (!other) {
+        return res.status(404).json({
+          message: "User not found.",
+        });
+      }
+
+      // already following?
+      if (me.following.includes(otherId)) {
+        return res.status(400).json({
+          message: "You already follow this user.",
+        });
+      }
+
+      // push into each side's array
+      me.following.push(otherId);
+      other.followers.push(meId);
+
+      await Promise.all([me.save(), other.save()]);
+
+      return res.status(200).json({
+        message: `You are now following ${other.name}`,
+        following: me.following,
+        followersCount: other.followers.length,
+      });
+    } catch (error) {
+      console.error("UserController.follow:", error);
+      res.status(500).json({
+        message: "Server error while trying to follow this user",
+        error: error,
+      });
+    }
+  },
 };
 
 module.exports = UserController;
