@@ -15,6 +15,6 @@ router.put("/id/:_id", authentication, UserController.update);
 router.delete("/id/:_id", authentication, UserController.delete);
 
 // follow / unfollow
-router.post("/:id/follow", UserController.follow);
+router.post("/:id/follow", authentication, UserController.follow);
 
 module.exports = router;
