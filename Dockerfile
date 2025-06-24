@@ -12,7 +12,7 @@ COPY ["package.json", "package-lock.json","./"]
 RUN npm install --only=production
 
 # Copy the rest of the app files
-COPY src ./
+COPY src/. ./
 
 # Expose the port your app listens on
 EXPOSE 3000
