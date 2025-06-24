@@ -7,14 +7,15 @@ RUN mkdir -p /root/src
 # Establish the work directory in /root/src
 WORKDIR /root/src
 
-# Copy dependencies files (for better cashing)
+# Install only production deps
 COPY ["package.json", "package-lock.json","./"] 
-
-# Install dependencies
-RUN npm install
+RUN npm install --only=production
 
 # Copy the rest of the app files
-COPY . ./
+COPY src ./
 
-# Start the app
-CMD ["npm", "run", "dev"]
+# Expose the port your app listens on
+EXPOSE 3000
+
+# Launch the app with your "start" script
+CMD ["npm", "start"]

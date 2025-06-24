@@ -6,7 +6,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     volumes:
-      - ./:/root/src
+      - ./src:/root/src
     healthcheck:
       disable: true
     restart: unless-stopped
