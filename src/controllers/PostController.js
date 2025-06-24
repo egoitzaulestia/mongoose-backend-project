@@ -1,3 +1,4 @@
+const { parse } = require("dotenv");
 const Post = require("../models/Post");
 const User = require("../models/User");
 
@@ -35,6 +36,45 @@ const PostController = {
       res.status(500).send({
         message: "There was an error while loading the posts",
         error,
+      });
+    }
+  },
+
+  async getAllWithCommonts(req, res) {
+    try {
+      const { page = 1, limit = 10 } = req.query;
+      const skip = (page - 1) * limit;
+      const perPage = parseInt(limit);
+
+      // Total count (for pagaination metadata)
+      const total = await Post.countDocuments();
+
+      // Fetch posts + populate author + comments + comment authors
+      const posts = await Post.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(perPage)
+        .populate("author", "name email") // post author
+        .populate({
+          path: "comments",
+          option: { sort: { createdAt: -1 } },
+          populate: {
+            // nested populate
+            path: "author",
+            select: "name email",
+          },
+        });
+
+      return res.json({
+        total,
+        page: parseInt(page),
+        pages: Math.ceil(total / perPage),
+        posts,
+      });
+    } catch (error) {
+      console.error("getAllWithComment error:", error);
+      return res.status(500).joson({
+        message: "Server error loading posts with comments",
       });
     }
   },
