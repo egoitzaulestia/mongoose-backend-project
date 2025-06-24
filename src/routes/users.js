@@ -15,6 +15,7 @@ router.put("/id/:_id", authentication, UserController.update);
 router.delete("/id/:_id", authentication, UserController.delete);
 
 router.get("/me/profile", authentication, UserController.getProfile);
+
 // follow / unfollow
 router.post("/:id/follow", authentication, UserController.follow);
 router.delete("/:id/follow", authentication, UserController.unfollow);
