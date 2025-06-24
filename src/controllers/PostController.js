@@ -6,16 +6,21 @@ const User = require("../models/User");
 const PostController = {
   async create(req, res) {
     try {
-      const post = await Post.create(req.body);
+      const author = req.user._id;
+
+      const post = await Post.create({
+        author,
+        ...req.body,
+      });
 
       res.status(201).send({
         message: "Post created successfully",
         post,
       });
     } catch (error) {
-      console.error(error);
+      console.error("PostController.create:", error);
       res.status(500).send({
-        message: "Proble while creating a post",
+        message: "Problem while creating a post",
         error,
       });
     }
