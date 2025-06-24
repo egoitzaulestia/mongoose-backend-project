@@ -18,4 +18,4 @@ COPY src/. ./
 EXPOSE 3000
 
 # Launch the app with your "start" script
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
