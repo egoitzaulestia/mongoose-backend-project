@@ -74,7 +74,7 @@ const PostController = {
       });
     } catch (error) {
       console.error("getAllWithComment error:", error);
-      return res.status(500).joson({
+      return res.status(500).json({
         message: "Server error loading posts with comments",
       });
     }

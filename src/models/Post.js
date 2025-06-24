@@ -18,11 +18,11 @@ const LikeSchema = new mongoose.Schema(
 // Post schema
 const PostSchema = new mongoose.Schema(
   {
-    // author: {
-    //   type: ObjectId,
-    //   ref: "User",
-    //   required: [true, "Author is required"],
-    // },
+    author: {
+      type: ObjectId,
+      ref: "User",
+      required: [true, "Author is required"],
+    },
 
     title: {
       type: String,
