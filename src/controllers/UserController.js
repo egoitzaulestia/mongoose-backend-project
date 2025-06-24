@@ -256,6 +256,7 @@ const UserController = {
     }
   },
 
+  // POST /users/:id/follow
   async follow(req, res) {
     try {
       const meId = req.user._id;
@@ -301,6 +302,52 @@ const UserController = {
       res.status(500).json({
         message: "Server error while trying to follow this user",
         error: error,
+      });
+    }
+  },
+
+  // DELETE /users/:id/follow
+  async unfollow(req, res) {
+    try {
+      const meId = req.user._id;
+      const otherId = req.params.id;
+
+      if (meId.equals(otherId)) {
+        return res.status(400).json({
+          message: "You cannot unfollow yourself.",
+        });
+      }
+
+      const [me, other] = await Promise.all([
+        User.findById(meId),
+        User.findById(otherId),
+      ]);
+      if (!other) {
+        return res.status(404).json({
+          message: "You cannot unfollow yourself.",
+        });
+      }
+
+      // must be following firs
+      if (!me.following.includes(otherId)) {
+        return res.status(400).json({ message: "You don't follow this user." });
+      }
+
+      // remove from both array
+      me.following = me.following.filter((id) => !id.equals(otherId));
+      other.followers = other.followers.filter((id) => !id.equals(meId));
+
+      await Promise.all([me.save(), other.save()]);
+
+      return res.status(200).json({
+        message: `You unfollowed ${other.name}`,
+        following: me.following,
+        followersCount: other.followers.length,
+      });
+    } catch (error) {
+      console.error("UserController.unfollow:", error);
+      res.status(500).json({
+        message: "Server error while unfollowing this user",
       });
     }
   },
