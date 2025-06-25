@@ -19,7 +19,11 @@ router.get("/", UserController.getAll);
 router.put("/id/:_id", authentication, UserController.update);
 
 // Upload profile-photo endpoint
-// router.post('/me/photo', authentication, single('photo', UserController.uploadPhoto))
+router.post(
+  "/me/photo",
+  authentication,
+  single("photo", UserController.uploadPhoto)
+);
 
 router.delete("/id/:_id", authentication, UserController.delete);
 
