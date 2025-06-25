@@ -6,6 +6,11 @@ const { authentication } = require("../middlewares/authentication");
 router.get("/", CommentController.getAllComments);
 
 router.get("/detailed", authentication, CommentController.getDetailed);
+router.get(
+  "/:commentId/detailed",
+  authentication,
+  CommentController.getOneDetailed
+);
 
 // Like a comment
 router.post("/:commentId/like", authentication, CommentController.likeComment);
