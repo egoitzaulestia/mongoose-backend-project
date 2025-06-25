@@ -43,16 +43,4 @@ const isAdmin = async (req, res, next) => {
   }
 };
 
-// const isAuthor = async (req, res, next) => {
-//   try {
-//     const order = await
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send({
-//       error,
-//       message: "There was an error while checking the authority of the order",
-//     });
-//   }
-// };
-
 module.exports = { authentication, isAdmin };
