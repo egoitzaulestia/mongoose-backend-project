@@ -119,7 +119,12 @@ const CommentController = {
     }
   },
 
-  // GET /comments/detailed
+  /**
+   * GET /comments/detailed
+   * returns each comment + comment author +
+   *   the post it belongs to + that post’s author +
+   *   the users who’ve liked the comment
+   */
   async getDetailed(req, res) {
     try {
       const { page = 1, limit = 10 } = req.query;
@@ -151,6 +156,36 @@ const CommentController = {
       console.error("CommentController.getDetailed:", err);
       return res.status(500).json({
         message: "Server error loading detailed comments",
+        error: err,
+      });
+    }
+  },
+
+  // GET /comments/:commentId/detailed
+  async getOneDetailed(req, res) {
+    try {
+      const { commentId } = req.params;
+      if (!ObjectId.isValid(commentId)) {
+        return res.status(400).json({ message: "Invalid commentId" });
+      }
+
+      const comment = await Comment.findById(commentId)
+        .populate("author", "name email")
+        .populate({
+          path: "postId",
+          populate: { path: "author", select: "name email" },
+        })
+        .populate("likes.userId", "name");
+
+      if (!comment) {
+        return res.status(404).json({ message: "Comment not found" });
+      }
+
+      return res.status(200).json({ comment });
+    } catch (err) {
+      console.error("CommentController.getOneDetailedm:", err);
+      return res.status(500).json({
+        message: "Server error loading comment",
         error: err,
       });
     }
