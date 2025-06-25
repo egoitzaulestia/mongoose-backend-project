@@ -119,6 +119,43 @@ const CommentController = {
     }
   },
 
+  // GET /comments/detailed
+  async getDetailed(req, res) {
+    try {
+      const { page = 1, limit = 10 } = req.query;
+      const skip = (page - 1) * limit;
+      const perPage = parseInd(limit);
+
+      const [total, comments] = await Promise.all([
+        Comment.countDocuments(),
+        Comment.find()
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(perPage)
+          // comment -> author, post, post.author, likes.userId
+          .populate("author", "name email")
+          .populate({
+            path: "postId",
+            populate: { path: "author", select: "name email" },
+          })
+          .populate("likes.userId", "name"),
+      ]);
+
+      return res.status(200).json({
+        total,
+        paga: parseInt(page),
+        pages: Math.ceil(total / perPage),
+        comments,
+      });
+    } catch (err) {
+      console.error("CommentController.getDetailed:", err);
+      return res.status(500).json({
+        message: "Server error loading detailed comments",
+        error: err,
+      });
+    }
+  },
+
   // POST /comments/:commentId/like
   async likeComment(req, res) {
     try {
