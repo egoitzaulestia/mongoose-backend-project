@@ -70,9 +70,9 @@ const uploadSingle = (fieldName) => (req, res, next) => {
     if (err instanceof multer.MulterError) {
       // multer-specific errors
       if (err.code === "LIMIT_FILE_SIZE") {
-        return res
-          .status(400)
-          .json({ message: "File too large. Max size is 2 MB." });
+        return res.status(400).json({
+          message: "File too large. Max size is 2 MB.",
+        });
       }
       return res.status(400).json({ message: err.message });
     } else if (err) {
