@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const CommentController = require("../controllers/CommentController");
 const { authentication } = require("../middlewares/authentication");
+const { isCommentAuthor } = require("../middlewares/authorship");
 
 router.get("/", CommentController.getAllComments);
 
@@ -20,6 +21,14 @@ router.delete(
   "/:commentId/like",
   authentication,
   CommentController.unlikeComment
+);
+
+// Edit comment, guarded by isCommentAuthor
+router.put(
+  "/:commentId",
+  authentication,
+  isCommentAuthor,
+  CommentController.updateComment
 );
 
 module.exports = router;
