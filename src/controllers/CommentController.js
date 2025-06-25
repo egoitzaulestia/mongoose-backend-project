@@ -129,7 +129,7 @@ const CommentController = {
     try {
       const { page = 1, limit = 10 } = req.query;
       const skip = (page - 1) * limit;
-      const perPage = parseInd(limit);
+      const perPage = parseInt(limit);
 
       const [total, comments] = await Promise.all([
         Comment.countDocuments(),
