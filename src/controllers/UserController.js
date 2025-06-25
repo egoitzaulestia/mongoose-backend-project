@@ -8,42 +8,88 @@ const transporter = require("../config/nodemailer");
 
 //TO DO -> work in validtions (404, etc.) ...
 const UserController = {
+  // async register(req, res, next) {
+  //   try {
+  //     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+  //     const user = await User.create({
+  //       ...req.body,
+  //       password: hashedPassword,
+  //       role: "user",
+  //       confirmed: false,
+  //     });
+
+  //     const emailToken = jwt.sign({ email: req.body.email }, JWT_SECRET, {
+  //       expiresIn: "48h",
+  //     });
+
+  //     const url = `http://localhost:3000/users/confirm/${emailToken}`;
+
+  //     await transporter.sendMail({
+  //       to: req.body.email,
+  //       subject: "Confirm your regist",
+  //       html: `
+  //         <h3>Welcome, you are almost there </h3>
+  //         <a href=${url}>Click here to confirm your regist</a>
+  //       `,
+  //     });
+
+  //     res.status(201).send({
+  //       message: "User registered successfully",
+  //       user,
+  //     });
+  //   } catch (error) {
+  //     // console.error(error);
+  //     // res.status(500).send({
+  //     //   message: "Error while trying to regist a user",
+  //     //   error,
+  //     // });
+  //     error.origin = "user";
+  //     next(error);
+  //   }
+  // },
+
+  // Registration (with optional photo upload)
   async register(req, res, next) {
     try {
+      // hash the password
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-      const user = await User.create({
+      // build the new user payload
+      const newUserData = {
         ...req.body,
         password: hashedPassword,
         role: "user",
         confirmed: false,
-      });
+      };
 
-      const emailToken = jwt.sign({ email: req.body.email }, JWT_SECRET, {
+      // if multer saw a file, add its URL
+      if (req.file) {
+        newUserData.photoUrl = `/uploads/${req.file.filename}`;
+      }
+
+      const user = await User.create(newUserData);
+
+      // send email confirmation
+      const emailToken = jwt.sign({ email: user.email }, JWT_SECRET, {
         expiresIn: "48h",
       });
-
       const url = `http://localhost:3000/users/confirm/${emailToken}`;
 
       await transporter.sendMail({
-        to: req.body.email,
-        subject: "Confirm your regist",
+        to: user.email,
+        subject: "Confirm your registration",
         html: `
-          <h3>Welcome, you are almost there </h3>
-          <a href=${url}>Click here to confirm your regist</a>
+          <h3>Welcome, ${user.name}</h3>
+          <p>Click <a href="${url}">here</a> to confirm your account.</p>
         `,
       });
 
-      res.status(201).send({
+      res.status(201).json({
         message: "User registered successfully",
-        user,
+        user, // thanks to toJSON(), no password or tokens leak out
       });
     } catch (error) {
-      // console.error(error);
-      // res.status(500).send({
-      //   message: "Error while trying to regist a user",
-      //   error,
-      // });
       error.origin = "user";
       next(error);
     }
@@ -306,6 +352,27 @@ const UserController = {
         message: "Server error while deleting the user",
         error,
       });
+    }
+  },
+
+  // Separate “upload photo” endpoint
+  async uploadPhoto(req, res, next) {
+    try {
+      // multer middleware already sent 400 if no file or wrong type/size
+      const photoUrl = `/uploads/${req.file.filename}`;
+
+      const user = await User.findByIdAndUpdate(
+        req.user._id,
+        { photoUrl, $inc: { __v: 1 } },
+        { new: true, runValidators: true }
+      );
+
+      res.status(200).json({
+        message: "Profile photo updated successfully",
+        user,
+      });
+    } catch (error) {
+      next(error);
     }
   },
 
