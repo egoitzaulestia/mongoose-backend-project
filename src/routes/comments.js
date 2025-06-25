@@ -31,4 +31,12 @@ router.put(
   CommentController.updateComment
 );
 
+// Delete comment, guarded by isCommentAuthor
+router.delete(
+  "/:commentId",
+  authentication,
+  isCommentAuthor,
+  CommentController.deleteComment
+);
+
 module.exports = router;
