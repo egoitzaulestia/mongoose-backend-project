@@ -15,7 +15,12 @@ router.get("/info", authentication, UserController.getInfo);
 router.get("/id/:_id", authentication, UserController.getById);
 router.get("/name/:name", UserController.getByName);
 router.get("/", UserController.getAll);
+
 router.put("/id/:_id", authentication, UserController.update);
+
+// Upload profile-photo endpoint
+// router.post('/me/photo', authentication, single('photo', UserController.uploadPhoto))
+
 router.delete("/id/:_id", authentication, UserController.delete);
 
 router.get("/me/profile", authentication, UserController.getProfile);
