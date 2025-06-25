@@ -33,6 +33,12 @@ const UserSchema = new mongoose.Schema(
       min: [0, "Age cannot be negative"],
     },
 
+    photoUrl: {
+      type: String,
+      trim: true,
+      default: "", // or a placeholder URL
+    },
+
     role: {
       type: String,
       required: [true, "Role is required"],
