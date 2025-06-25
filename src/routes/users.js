@@ -6,7 +6,7 @@ const { single } = require("../middlewares/uploads");
 const { authentication, isAdmin } = require("../middlewares/authentication");
 
 // router.post("/register", UserController.register);
-router.post("/register", single("phot"), UserController.register);
+router.post("/register", single("photo"), UserController.register);
 
 router.get("/confirm/:emailToken", UserController.confirm);
 router.post("/login", UserController.login);
@@ -22,7 +22,8 @@ router.put("/id/:_id", authentication, UserController.update);
 router.post(
   "/me/photo",
   authentication,
-  single("photo", UserController.uploadPhoto)
+  single("photo"),
+  UserController.uploadPhoto
 );
 
 router.delete("/id/:_id", authentication, UserController.delete);
