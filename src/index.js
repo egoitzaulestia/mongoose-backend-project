@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -10,6 +11,7 @@ app.use(express.json());
 app.use("/users", require("./routes/users"));
 app.use("/posts", require("./routes/posts"));
 app.use("/comments", require("./routes/comments"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 dbConnection();
 
