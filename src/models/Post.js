@@ -46,17 +46,23 @@ const PostSchema = new mongoose.Schema(
           validator: (arr) => arr.length <= 4,
           message: "You can upload up to 4 images per post",
         },
+        // {
+        //   // Each string must be a URL ending in jpg|jpeg|png|gif
+        //   validator: (arr) =>
+        //     arr.every(
+        //       (url) =>
+        //         isURL(url, {
+        //           protocols: ["http", "https"],
+        //           require_tld: true,
+        //         }) && /\.(jpe?g|png|gif)$/i.test(url)
+        //     ),
+        //   message: "Each imageUrl must be a valid JPG/PNG/GIF URL",
+        // },
         {
-          // Each string must be a URL ending in jpg|jpeg|png|gif
           validator: (arr) =>
-            arr.every(
-              (url) =>
-                isURL(url, {
-                  protocols: ["http", "https"],
-                  require_tld: true,
-                }) && /\.(jpe?g|png|gif)$/i.test(url)
-            ),
-          message: "Each imageUrl must be a valid JPG/PNG/GIF URL",
+            // each string ends in .jpg/.jpeg/.png/.gif (case-insensitive)
+            arr.every((v) => /\.(jpe?g|png|gif)$/i.test(v)),
+          message: "Each imageUrl must end in JPG/PNG/GIF",
         },
       ],
     },

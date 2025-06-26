@@ -50,7 +50,7 @@ const PostController = {
         post,
       });
     } catch (err) {
-      console.err("PostController.create:", err);
+      console.error("PostController.create:", err);
       res.status(500).json({
         message: "Problem while createing a post",
         error: err,
