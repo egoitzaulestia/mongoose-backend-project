@@ -3,12 +3,28 @@ const router = express.Router();
 const PostController = require("../controllers/PostController");
 const CommentController = require("../controllers/CommentController");
 const { authentication } = require("../middlewares/authentication");
+const { single, array } = require("../middlewares/uploads");
 
-router.post("/create", authentication, PostController.create);
+// create post **with up to 4 images**
+router.post(
+  "/create",
+  authentication,
+  array("images", 4),
+  PostController.create
+);
+
 router.get("/", PostController.getAll);
 router.get("/full", PostController.getAllWithCommonts);
 // router.get("/full", authentication, PostController.getAllWithCommonts);
-router.put("/id/:_id", authentication, PostController.update);
+
+// Update post (e.g. add or replace images)
+router.put(
+  "/id/:_id",
+  authentication,
+  array("images", 4),
+  PostController.update
+);
+
 router.delete("/id/:_id", authentication, PostController.delete);
 router.get("/title/:title", PostController.getByTitle);
 router.get("/id/:_id", PostController.getById);
