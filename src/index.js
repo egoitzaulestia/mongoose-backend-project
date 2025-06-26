@@ -6,6 +6,13 @@ const PORT = process.env.PORT || 3000;
 const { dbConnection } = require("./config/db");
 const { typeError } = require("./middlewares/typeError");
 
+// Welcome message to the Social Media API
+app.get("/", (req, res) => {
+  res.json({
+    message: "🎉 Welcome to the Social Media API! Everything’s up and running.",
+  });
+});
+
 app.use(express.json());
 
 app.use("/users", require("./routes/users"));
