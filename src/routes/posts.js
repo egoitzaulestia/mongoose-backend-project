@@ -36,7 +36,12 @@ router.post("/:postId/like", authentication, PostController.likePost);
 router.delete("/:postId/like", authentication, PostController.unlikePost);
 
 // Create a comment in post
-router.post("/:postId/comments", authentication, CommentController.create);
+router.post(
+  "/:postId/comments",
+  authentication,
+  array("images", 4),
+  CommentController.create
+);
 
 // GET all comments from a post
 router.get(

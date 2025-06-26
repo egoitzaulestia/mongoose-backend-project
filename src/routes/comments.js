@@ -3,6 +3,7 @@ const router = express.Router();
 const CommentController = require("../controllers/CommentController");
 const { authentication } = require("../middlewares/authentication");
 const { isCommentAuthor } = require("../middlewares/authorship");
+const { array } = require("../middlewares/uploads");
 
 router.get("/", CommentController.getAllComments);
 

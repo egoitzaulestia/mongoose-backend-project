@@ -18,7 +18,7 @@ const CommentController = {
 
       if (!content?.trim()) {
         return res.status(400).json({
-          message: "Content id required",
+          message: "Content is required",
         });
       }
 
