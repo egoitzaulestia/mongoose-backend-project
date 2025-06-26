@@ -200,36 +200,85 @@ const CommentController = {
    * PUT  /comments/:commentId
    * Only the comment’s author can hit this (enforced in middleware)
    */
+  // async updateComment(req, res) {
+  //   try {
+  //     const { commentId } = req.params;
+  //     const { content, imageUrl } = req.body;
+
+  //     // Validate input
+  //     if (!content?.trim()) {
+  //       return res.status(400).json({ message: "Content cannot be empty" });
+  //     }
+
+  //     // Perform the update
+  //     const comment = await Comment.findByIdAndUpdate(
+  //       commentId,
+  //       {
+  //         $set: {
+  //           content: content.trim(),
+  //           ...(imageUrl !== undefined && { imageUrl }),
+  //         },
+  //         $inc: { __v: 1 },
+  //       },
+  //       { new: true }
+  //     )
+  //       .populate("author", "name email")
+  //       .populate({
+  //         path: "postId",
+  //         select: "title author",
+  //         populate: { path: "author", select: "name email" },
+  //       });
+
+  //     return res.status(200).json({
+  //       message: "Comment updated successfully",
+  //       comment,
+  //     });
+  //   } catch (err) {
+  //     console.error("CommentController.updateComment:", err);
+  //     return res.status(500).json({
+  //       message: "Server error while updating comment",
+  //       error: err,
+  //     });
+  //   }
+  // },
+
   async updateComment(req, res) {
     try {
       const { commentId } = req.params;
-      const { content, imageUrl } = req.body;
+      const { content } = req.body;
 
-      // Validate input
+      // Validate inputs
+      if (!ObjectId.isValid(commentId)) {
+        return res.status(400).json({ message: "Invalid commentId" });
+      }
       if (!content?.trim()) {
         return res.status(400).json({ message: "Content cannot be empty" });
       }
 
-      // Perform the update
-      const comment = await Comment.findByIdAndUpdate(
-        commentId,
-        {
-          $set: {
-            content: content.trim(),
-            ...(imageUrl !== undefined && { imageUrl }),
-          },
-          $inc: { __v: 1 },
-        },
-        { new: true }
-      )
-        .populate("author", "name email")
-        .populate({
-          path: "postId",
-          select: "title author",
-          populate: { path: "author", select: "name email" },
-        });
+      // Fetch the comment
+      const comment = await Comment.findById(commentId);
+      if (!comment) {
+        return res.status(404).json({ message: "Comment not found" });
+      }
 
-      return res.status(200).json({
+      // Update text
+      comment.content = content.trim();
+
+      // Append new images (if any), but cap at 4 total
+      if (req.files && req.files.length > 0) {
+        const newUrls = req.files.map((f) => `/uploads/${f.filename}`);
+        comment.imageUrls = comment.imageUrls.concat(newUrls).slice(0, 4);
+      }
+
+      await comment.save();
+
+      await comment.populate("author", "name email").populate({
+        path: "postId",
+        select: "title author",
+        populate: { path: "author", select: "name email" },
+      });
+
+      res.status(200).json({
         message: "Comment updated successfully",
         comment,
       });
