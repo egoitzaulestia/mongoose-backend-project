@@ -1,32 +1,11 @@
 const { parse } = require("dotenv");
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 const Post = require("../models/Post");
 const User = require("../models/User");
 const { errorMonitor } = require("nodemailer/lib/xoauth2");
 
 const PostController = {
-  // async create(req, res) {
-  //   try {
-  //     const author = req.user._id;
-
-  //     const post = await Post.create({
-  //       author,
-  //       ...req.body,
-  //     });
-
-  //     res.status(201).send({
-  //       message: "Post created successfully",
-  //       post,
-  //     });
-  //   } catch (error) {
-  //     console.error("PostController.create:", error);
-  //     res.status(500).send({
-  //       message: "Problem while creating a post",
-  //       error,
-  //     });
-  //   }
-  // },
-
   async create(req, res) {
     try {
       const author = req.user._id;
@@ -117,26 +96,69 @@ const PostController = {
     }
   },
 
-  // NOTE: Improve validation
+  // // NOTE: Improve validation
+  // async update(req, res) {
+  //   try {
+  //     const post = await Post.findByIdAndUpdate(
+  //       req.params._id,
+  //       {
+  //         $set: req.body,
+  //         $inc: { __v: 1 },
+  //       },
+  //       { new: true }
+  //     );
+  //     res.status(200).send({
+  //       message: "Post updated successfully",
+  //       post,
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).send({
+  //       message: "Error while updating the post",
+  //       error,
+  //     });
+  //   }
+  // },
+
   async update(req, res) {
     try {
-      const post = await Post.findByIdAndUpdate(
-        req.params._id,
-        {
-          $set: req.body,
-          $inc: { __v: 1 },
-        },
-        { new: true }
-      );
-      res.status(200).send({
+      const { _id } = req.params;
+
+      // Check for a valid ObjectId
+      if (!ObjectId.isValid(_id)) {
+        return res.status(400).json({ message: "Invalid post ID" });
+      }
+
+      // Build the update payload
+      const updates = {
+        ...req.body,
+        $inc: { __v: 1 },
+      };
+
+      if (req.files && rec.files.length > 0) {
+        this.update.imageUrls = req.files.map((f) => `/uploads/${f.filename}`);
+      }
+
+      // Perform the update & run validators
+      const post = await Post.findByIdAndUpdate(_id, updates, {
+        new: true,
+        runValidators: true,
+      });
+
+      // If no document
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      return res.status(200).json({
         message: "Post updated successfully",
         post,
       });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({
+    } catch (err) {
+      console.error("PostController.update:", err);
+      return res.status(500).json({
         message: "Error while updating the post",
-        error,
+        error: err,
       });
     }
   },
