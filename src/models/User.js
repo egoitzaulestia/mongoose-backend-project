@@ -37,6 +37,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: "", // or a placeholder URL
+      validate: {
+        validator: (url) => !url || /\.(jpe?g|png|gif)$/i.test(url),
+        message: "photoUrl must be a JPG, PNG, or GIF file",
+      },
     },
 
     role: {
