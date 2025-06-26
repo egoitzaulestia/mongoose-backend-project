@@ -120,36 +120,81 @@ const PostController = {
   //   }
   // },
 
+  // async update(req, res) {
+  //   try {
+  //     const { _id } = req.params;
+
+  //     // Check for a valid ObjectId
+  //     if (!ObjectId.isValid(_id)) {
+  //       return res.status(400).json({ message: "Invalid post ID" });
+  //     }
+
+  //     // Build the update payload
+  //     const updates = {
+  //       ...req.body,
+  //       $inc: { __v: 1 },
+  //     };
+
+  //     if (req.files && req.files.length > 0) {
+  //       this.updates.imageUrls = req.files.map((f) => `/uploads/${f.filename}`);
+  //     }
+
+  //     // Perform the update & run validators
+  //     const post = await Post.findByIdAndUpdate(_id, updates, {
+  //       new: true,
+  //       runValidators: true,
+  //     });
+
+  //     // If no document
+  //     if (!post) {
+  //       return res.status(404).json({ message: "Post not found" });
+  //     }
+
+  //     return res.status(200).json({
+  //       message: "Post updated successfully",
+  //       post,
+  //     });
+  //   } catch (err) {
+  //     console.error("PostController.update:", err);
+  //     return res.status(500).json({
+  //       message: "Error while updating the post",
+  //       error: err,
+  //     });
+  //   }
+  // },
+
   async update(req, res) {
     try {
       const { _id } = req.params;
 
-      // Check for a valid ObjectId
+      // 1) Validate the ID
       if (!ObjectId.isValid(_id)) {
         return res.status(400).json({ message: "Invalid post ID" });
       }
 
-      // Build the update payload
+      // 2) Build your update payload
       const updates = {
-        ...req.body,
+        ...req.body, // title, content, etc.
         $inc: { __v: 1 },
       };
 
-      if (req.files && rec.files.length > 0) {
-        this.update.imageUrls = req.files.map((f) => `/uploads/${f.filename}`);
+      // 3) If images were uploaded, overwrite imageUrls
+      if (req.files && req.files.length > 0) {
+        updates.imageUrls = req.files.map((f) => `/uploads/${f.filename}`);
       }
 
-      // Perform the update & run validators
+      // 4) Perform the update with validation
       const post = await Post.findByIdAndUpdate(_id, updates, {
         new: true,
         runValidators: true,
       });
 
-      // If no document
+      // 5) Handle "not found"
       if (!post) {
         return res.status(404).json({ message: "Post not found" });
       }
 
+      // 6) Success
       return res.status(200).json({
         message: "Post updated successfully",
         post,
