@@ -21,11 +21,13 @@ const CommentSchema = new mongoose.Schema(
       ref: "Post",
       required: [true, "Comment must belong to a post"],
     },
+
     author: {
       type: ObjectId,
       ref: "User",
       required: [true, "Comment must have an author"],
     },
+
     content: {
       type: String,
       required: [true, "Comment content is required"],
@@ -33,14 +35,23 @@ const CommentSchema = new mongoose.Schema(
       maxlength: [500, "Comment too long"],
       trim: true,
     },
-    imageUrl: {
-      type: String,
-      trim: true,
-      validate: {
-        validator: (v) => !v || (isURL(v) && /\.(jpe?g|png|gif)$/i.test(v)),
-        message: "Must be a valid image URL",
-      },
+
+    imageUrls: {
+      type: [String],
+      default: [],
+      validate: [
+        {
+          validator: (arr) => arr.length <= 4,
+          message: "You can upload up to 4 images per comment",
+        },
+        {
+          validator: (arr) =>
+            arr.every((url) => /\.(jpe?g|png|gif)$/i.test(url)),
+          message: "Each imageUrl must end in JPG/PNG/GIF",
+        },
+      ],
     },
+
     likes: {
       type: [LikeSchema],
       default: [],
@@ -51,13 +62,14 @@ const CommentSchema = new mongoose.Schema(
   }
 );
 
-// index postId for fast lookup of a post's comments
+// Index postId for fast lookup of a post's comments
 CommentSchema.index({ postId: 1, createdAt: -1 });
 
+// Strip __v on toJSON
 CommentSchema.methods.toJSON = function () {
-  const commentObject = this.toObject();
-  delete commentObject.__v;
-  return commentObject;
+  const cObj = this.toObject();
+  delete cObj.__v;
+  return cObj;
 };
 
 const Comment = mongoose.model("Comment", CommentSchema);
