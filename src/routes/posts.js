@@ -47,7 +47,6 @@ router.post(
 router.get(
   "/:postId/comments",
   authentication,
-  array("images", 4),
   CommentController.getAllComments
 );
 

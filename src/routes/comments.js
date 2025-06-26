@@ -29,6 +29,7 @@ router.put(
   "/:commentId",
   authentication,
   isCommentAuthor,
+  array("images", 4),
   CommentController.updateComment
 );
 

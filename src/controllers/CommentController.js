@@ -272,11 +272,15 @@ const CommentController = {
 
       await comment.save();
 
-      await comment.populate("author", "name email").populate({
-        path: "postId",
-        select: "title author",
-        populate: { path: "author", select: "name email" },
-      });
+      // populate author + post.author
+      await comment.populate([
+        { path: "author", select: "name email" },
+        {
+          path: "postId",
+          select: "title author",
+          populate: { path: "author", select: "name email" },
+        },
+      ]);
 
       res.status(200).json({
         message: "Comment updated successfully",
