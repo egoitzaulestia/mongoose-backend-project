@@ -61,7 +61,12 @@ const PostSchema = new mongoose.Schema(
     },
   },
 
-  { timestamps: true }
+  {
+    timestamps: true,
+    id: false,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
 
 PostSchema.virtual("comments", {
@@ -76,9 +81,6 @@ PostSchema.index({
   title: "text",
   content: "text",
 });
-
-PostSchema.set("toObject", { virtuals: true });
-PostSchema.set("toJSON", { virtuals: true });
 
 const Post = mongoose.model("Post", PostSchema);
 
