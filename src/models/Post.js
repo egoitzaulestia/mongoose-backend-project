@@ -37,13 +37,28 @@ const PostSchema = new mongoose.Schema(
       trim: true,
     },
 
-    imageUrl: {
-      type: String,
-      trim: true,
-      validate: {
-        validator: (v) => !v || (isURL(v) && /\.(jpe?g|png|gif)$/i.test(v)),
-        message: "Must be a valid image URL",
-      },
+    imageUrls: {
+      type: [String],
+      default: [],
+      validate: [
+        {
+          // No more thatn 4 images
+          validator: (arr) => arr.length <= 4,
+          message: "You can upload up to 4 images per post",
+        },
+        {
+          // Each string must be a URL ending in jpg|jpeg|png|gif
+          validator: (arr) =>
+            arr.every(
+              (url) =>
+                isURL(url, {
+                  protocols: ["http", "https"],
+                  require_tld: true,
+                }) && /\.(jpe?g|png|gif)$/i.test(url)
+            ),
+          message: "Each imageUrl must be a valid JPG/PNG/GIF URL",
+        },
+      ],
     },
 
     likes: {

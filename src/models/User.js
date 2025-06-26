@@ -72,7 +72,7 @@ const UserSchema = new mongoose.Schema(
       },
     ],
 
-    // readList: [{ type: ObjectId, ref: "Post" }],
+    // whishReadList: [{ type: ObjectId, ref: "Post" }],
   },
   { timestamps: true }
 );
