@@ -61,6 +61,7 @@ src/
 │   └── nodemailer.js      # Email configuration
 ├── controllers/
 │   ├── CommentController.js
+│   ├── HomeController.js     # Welcome/API info
 │   ├── PostController.js
 │   └── UserController.js
 ├── middlewares/
@@ -74,6 +75,7 @@ src/
 │   └── User.js
 ├── routes/
 │   ├── comments.js
+│   ├── home.js               # Welcome route
 │   ├── posts.js
 │   └── users.js
 ├── uploads/               # Uploaded files storage
@@ -159,6 +161,12 @@ EMAIL_PASS=
 ```
 
 ## 📚 API Endpoints
+
+### Home Endpoint
+
+| Method | Endpoint | Description                | Authentication |
+| ------ | -------- | -------------------------- | -------------- |
+| GET    | `/`      | Welcome message / API info | ❌             |
 
 ### Authentication Endpoints
 
@@ -253,7 +261,7 @@ The API supports image uploads for:
 ### Upload Specifications
 
 - **Supported formats**: JPG, PNG, GIF
-- **Maximum file size**: 5MB per image
+- **Maximum file size**: 2MB per image
 - **Storage**: Local filesystem (uploads/ directory)
 
 ### Upload Endpoints
