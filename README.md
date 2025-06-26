@@ -259,7 +259,7 @@ The API supports image uploads for:
 
 ### Upload Endpoints
 
-- `POST /users/rigister` - (Optional) Upload profile photo in the register
+- `POST /users/register` - (Optional) Upload profile photo in the register
 - `POST /users/me/photo` - Upload profile photo
 - `POST /posts/create` - Create post with images
 - `PUT /posts/id/:_id` - Update post images
