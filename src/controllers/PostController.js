@@ -2,26 +2,58 @@ const { parse } = require("dotenv");
 const mongoose = require("mongoose");
 const Post = require("../models/Post");
 const User = require("../models/User");
+const { errorMonitor } = require("nodemailer/lib/xoauth2");
 
 const PostController = {
+  // async create(req, res) {
+  //   try {
+  //     const author = req.user._id;
+
+  //     const post = await Post.create({
+  //       author,
+  //       ...req.body,
+  //     });
+
+  //     res.status(201).send({
+  //       message: "Post created successfully",
+  //       post,
+  //     });
+  //   } catch (error) {
+  //     console.error("PostController.create:", error);
+  //     res.status(500).send({
+  //       message: "Problem while creating a post",
+  //       error,
+  //     });
+  //   }
+  // },
+
   async create(req, res) {
     try {
       const author = req.user._id;
 
-      const post = await Post.create({
+      // Build base post data
+      const data = {
         author,
         ...req.body,
-      });
+        imageUrls: [],
+      };
 
-      res.status(201).send({
+      // If files uploaded, map them
+      if (req.files && req.files.length > 0) {
+        data.imageUrls = req.files.map((f) => `/uploads/${f.filename}`);
+      }
+
+      const post = await Post.create(data);
+
+      res.status(201).json({
         message: "Post created successfully",
         post,
       });
-    } catch (error) {
-      console.error("PostController.create:", error);
-      res.status(500).send({
-        message: "Problem while creating a post",
-        error,
+    } catch (err) {
+      console.err("PostController.create:", err);
+      res.status(500).json({
+        message: "Problem while createing a post",
+        error: err,
       });
     }
   },
