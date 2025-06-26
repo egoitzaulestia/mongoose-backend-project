@@ -57,18 +57,18 @@ A comprehensive REST API for a social media platform built with Node.js, Express
 ```
 src/
 ├── config/
-│   ├── db.js              # Database configuration
-│   └── nodemailer.js      # Email configuration
+│   ├── db.js                 # Database configuration
+│   └── nodemailer.js         # Email configuration
 ├── controllers/
 │   ├── CommentController.js
 │   ├── HomeController.js     # Welcome/API info
 │   ├── PostController.js
 │   └── UserController.js
 ├── middlewares/
-│   ├── authentication.js  # JWT authentication
-│   ├── authorship.js      # Content ownership verification
-│   ├── typeError.js       # Error handling
-│   └── uploads.js         # File upload handling
+│   ├── authentication.js     # JWT authentication
+│   ├── authorship.js         # Content ownership verification
+│   ├── typeError.js          # Error handling
+│   └── uploads.js            # File upload handling
 ├── models/
 │   ├── Comment.js
 │   ├── Post.js
@@ -78,8 +78,8 @@ src/
 │   ├── home.js               # Welcome route
 │   ├── posts.js
 │   └── users.js
-├── uploads/               # Uploaded files storage
-└── index.js              # Application entry point
+├── uploads/                  # Uploaded files storage
+└── index.js                  # Application entry point
 ```
 
 ## 🔧 Installation
