@@ -1,33 +1,5 @@
-// const multer = require("multer");
-// const path = require("path");
-
-// // Decide where and how to save files
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "uploads/");
-//   },
-//   filename: (req, file, cb) => {
-//     // create a unique filenname so we don't overwrite
-//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-//     const ext = path.extname(file.originalname);
-//     cb(null, uniqueSuffix + ext);
-//   },
-// });
-
-// // Only accept common image types
-// const fileFilter = (req, file, cb) => {
-//   const allowed = ["image/jpeg", "image/png", "image/jpg"];
-//   if (allowed.includes(file.mimetype)) cb(null, true);
-//   else cb(new Error("Only JPG/PNG images are allowed"), false);
-// };
-
-// module.exports = multer({
-//   storage,
-//   fileFilter,
-//   limits: { fileSize: 2 * 1024 * 1024 }
-// });
-
 // middlewares/uploads.js
+
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
@@ -83,7 +55,31 @@ const uploadSingle = (fieldName) => (req, res, next) => {
   });
 };
 
+// Multiple images wrapper
+const uploadArray =
+  (fieldName, maxCount = 4) =>
+  (req, res, next) => {
+    upload.array(fieldName, maxCount)(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        if (err.code === "LIMIT_UNEXPECTED_FILE") {
+          return res.status(400).json({
+            message: `Too many files. Max ${maxCount}`,
+          });
+        }
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).json({
+            message: "One of the files is too large. Max size is 2 MB each.",
+          });
+        }
+        return res.status(400).json({ message: err.message });
+      }
+      if (err) return res.status(400).json({ message: err.message });
+      next();
+    });
+  };
+
 module.exports = {
   raw: upload,
   single: uploadSingle,
+  array: uploadArray,
 };
