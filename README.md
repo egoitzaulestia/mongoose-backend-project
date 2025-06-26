@@ -138,25 +138,24 @@ docker run -p 3000:3000 social-media-api
 Create a `.env` file in the root directory:
 
 ```env
-# Database (MongoDB Atlas)
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/social-media?retryWrites=true&w=majority
-DB_NAME=social-media
+# Production (MongoDB Atlas)
+MONGO_URI=
+DB_NAME=
 
-# JWT
-JWT_SECRET=your-super-secret-jwt-key
+# or, for local dev with Docker’d Mongo:
+# MONGO_INITDB_ROOT_USERNAME=
+# MONGO_INITDB_ROOT_PASSWORD=
+# MONGO_INITDB_DATABASE=
 
-# Email Configuration
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
+# Which port your Express app should listen on
+PORT=
 
-# Server
-PORT=3000
-NODE_ENV=development
+# JWT signing key (keep this secret!)
+JWT_SECRET=
 
-# Frontend URL (for CORS)
-FRONTEND_URL=http://localhost:3000
+# Email (Gmail) credentials
+EMAIL_USER=
+EMAIL_PASS=
 ```
 
 ## 📚 API Endpoints
