@@ -135,7 +135,7 @@ docker run -p 3000:3000 social-media-api
 
 ## 🔐 Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory (you can copy `​.env.example` to `.env` and then fill in your values):
 
 ```env
 # Production (MongoDB Atlas)
