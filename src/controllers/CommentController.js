@@ -8,29 +8,34 @@ const CommentController = {
   async create(req, res) {
     try {
       const { postId } = req.params;
-      const { content, imageUrl } = req.body;
+      const { content } = req.body;
       const userId = req.user._id;
 
+      // Validate postId & content
       if (!ObjectId.isValid(postId)) {
         return res.status(400).json({ message: "Invalid postId" });
       }
 
-      if (!postId || !content?.trim()) {
+      if (!content?.trim()) {
         return res.status(400).json({
-          message: "postId and content",
+          message: "Content id required",
         });
       }
 
+      // Ensure the post exists
       const postExists = await Post.exists({ _id: postId });
       if (!postExists) {
         return res.status(404).json({ message: "Post not found" });
       }
 
+      // Map any uploaded files to URLs
+      const imageUrls = req.files?.map((f) => `/uploads/${f.filename}`) || [];
+
       const comment = await Comment.create({
         postId,
         author: userId,
         content: content.trim(),
-        imageUrl,
+        imageUrls,
       });
 
       await comment.populate({
