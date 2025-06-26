@@ -44,13 +44,13 @@ A comprehensive REST API for a social media platform built with Node.js, Express
 ## 🛠 Technologies Used
 
 - **Backend**: Node.js, Express.js
-- **Database**: MongoDB with Mongoose ODM
+- **Database**: MongoDB Atlas (Cloud) with Mongoose ODM
 - **Authentication**: JWT (JSON Web Tokens), Bcrypt
 - **File Upload**: Multer middleware
 - **Email Service**: Nodemailer
 - **Validation**: Validator.js
 - **Environment Management**: Dotenv
-- **Deployment**: Docker, Render
+- **Deployment**: Docker, Render, MongoDB Atlas
 
 ## 📁 Project Structure
 
@@ -85,7 +85,7 @@ src/
 ### Prerequisites
 
 - Node.js (v14 or higher)
-- MongoDB database
+- MongoDB Atlas account (or local MongoDB instance)
 - Git
 
 ### Local Setup
@@ -138,8 +138,8 @@ docker run -p 3000:3000 social-media-api
 Create a `.env` file in the root directory:
 
 ```env
-# Database
-MONGO_URI=mongodb://localhost:27017/social-media
+# Database (MongoDB Atlas)
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/social-media?retryWrites=true&w=majority
 DB_NAME=social-media
 
 # JWT
@@ -259,10 +259,12 @@ The API supports image uploads for:
 
 ### Upload Endpoints
 
+- `POST /users/rigister` - (Optional) Upload profile photo in the register
 - `POST /users/me/photo` - Upload profile photo
 - `POST /posts/create` - Create post with images
 - `PUT /posts/id/:_id` - Update post images
 - `POST /posts/:postId/comments` - Create comment with images
+- `PUT /comments/:commentId` - Update comment images
 
 ## 🚀 Deployment
 
@@ -280,13 +282,27 @@ The application is deployed on Render with the following configuration:
 The project includes Docker support:
 
 ```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --production
-COPY . .
+# Use official Node.js image
+FROM node:18-alpine as builder
+
+# Create work directory in /root/src
+RUN mkdir -p /root/src
+
+# Establish the work directory in /root/src
+WORKDIR /root/src
+
+# Install only production deps
+COPY ["package.json", "package-lock.json","./"]
+RUN npm install --only=production
+
+# Copy the rest of the app files
+COPY src/. ./
+
+# Expose the port your app listens on
 EXPOSE 3000
-CMD ["npm", "start"]
+
+# Launch the app with your "start" script
+CMD ["node", "index.js"]
 ```
 
 ## 📝 API Response Format
@@ -295,11 +311,10 @@ CMD ["npm", "start"]
 
 ```json
 {
-  "success": true,
+  "message": "Operation successful",
   "data": {
-    // Response data
-  },
-  "message": "Operation successful"
+    // Response data (when applicable)
+  }
 }
 ```
 
@@ -307,9 +322,10 @@ CMD ["npm", "start"]
 
 ```json
 {
-  "success": false,
-  "error": "Error message",
-  "details": "Additional error details"
+  "message": "Error description",
+  "error": {
+    // Additional error details (in development)
+  }
 }
 ```
 
@@ -319,7 +335,6 @@ Test the API endpoints using tools like:
 
 - **Postman**: Import the API collection
 - **cURL**: Command-line testing
-- **Thunder Client**: VS Code extension
 
 ### Example Request
 
@@ -327,35 +342,29 @@ Test the API endpoints using tools like:
 curl -X POST https://mongoose-backend-project.onrender.com/users/login \
   -H "Content-Type: application/json" \
   -d '{"email": "user@example.com", "password": "password123"}'
+
+# Expected response:
+# {
+#   "message": "Login successful",
+#   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "user": { "name": "John Doe", "email": "user@example.com" }
+# }
 ```
 
-## 👥 Contributing
+## 📄 License & Usage
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+This project was created as part of a backend development learning course. It demonstrates the implementation of a complete REST API with authentication, CRUD operations, and social media features.
 
-### Contribution Guidelines
+**Note**: This is primarily an educational project showcasing backend development skills with Node.js, Express, and MongoDB.
 
-- Follow the existing code style
-- Add comments for complex logic
-- Update documentation for new features
-- Test your changes thoroughly
+## 🤝 Questions & Feedback
 
-## 📄 License
+If you have questions about the implementation or want to discuss the technical approaches used:
 
-This project is licensed under the ISC License.
-
-## 🤝 Support
-
-If you have any questions or need help with the API, please:
-
-1. Check the documentation above
-2. Review the existing issues
-3. Create a new issue with detailed information
+1. Review the code and documentation
+2. Check existing issues for similar questions
+3. Feel free to reach out for educational discussions about the architecture and design decisions
 
 ---
 
-**Built with ❤️ using Node.js, Express, and MongoDB**
+**Built with ❤️ using Node.js, Express, and MongoDB Atlas**
