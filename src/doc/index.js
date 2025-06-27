@@ -1,5 +1,5 @@
 const basicInfo = require("./basicinfo");
-const components = requeri("./components");
+const components = require("./components");
 
 module.exports = {
   ...basicInfo,
