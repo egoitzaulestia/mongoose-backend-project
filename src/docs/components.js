@@ -7,8 +7,8 @@ module.exports = {
         properties: {
           _id: {
             type: "string",
-            format: "uuid",
             description: "User unique identifier",
+            pattern: "^[0-9a-fA-F]{24}$",
             example: "62f1a0c3e4b0f8a1d23c4b5e",
           },
           name: {
@@ -74,8 +74,8 @@ module.exports = {
         properties: {
           _id: {
             type: "string",
-            format: "uuid",
             description: "Post unique identifier",
+            pattern: "^[0-9a-fA-F]{24}$",
             example: "62f2b1c5d4e1b9a2c34d5e6f",
           },
           author: {
@@ -112,8 +112,8 @@ module.exports = {
         properties: {
           _id: {
             type: "string",
-            format: "uuid",
             description: "Comment unique identifier",
+            pattern: "^[0-9a-fA-F]{24}$",
             example: "62f3c2d6e5f2c0b3d45e6f7a",
           },
           postId: {
