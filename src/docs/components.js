@@ -143,6 +143,18 @@ module.exports = {
           },
         },
       },
+
+      // -------- HOME --------
+      HomeResponse: {
+        type: "object",
+        properties: {
+          message: {
+            type: "string",
+            description: "Welcome message",
+            example: "Welcome to mongoose-backend-project API!",
+          },
+        },
+      },
     },
   },
 };
