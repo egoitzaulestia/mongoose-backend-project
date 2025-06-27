@@ -16,6 +16,8 @@ app.use("/posts", require("./routes/posts"));
 app.use("/comments", require("./routes/comments"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(docs));
+
 dbConnection();
 
 app.use(typeError);
