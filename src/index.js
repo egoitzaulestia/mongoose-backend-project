@@ -5,6 +5,8 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const { dbConnection } = require("./config/db");
 const { typeError } = require("./middlewares/typeError");
+const swaggerUI = require("swagger-ui-express");
+const docs = require("./doc/index");
 
 app.use(express.json());
 
