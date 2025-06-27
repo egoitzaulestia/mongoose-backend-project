@@ -1,5 +1,14 @@
 module.exports = {
   components: {
+    securitySchemes: {
+      ApiKeyAuth: {
+        type: "apiKey",
+        in: "header",
+        name: "Authorization",
+        description:
+          "Enter your bearer token in the format **Bearer &lt;token&gt;**",
+      },
+    },
     schemas: {
       // -------- USER --------
       User: {
