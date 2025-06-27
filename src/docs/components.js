@@ -67,6 +67,43 @@ module.exports = {
           },
         },
       },
+      // -------- POST --------
+      Post: {
+        type: "object",
+        properties: {
+          _id: {
+            type: "string",
+            format: "uuid",
+            description: "Post unique identifier",
+            example: "62f2b1c5d4e1b9a2c34d5e6f",
+          },
+          author: {
+            type: "string",
+            description: "User _id of the author",
+            example: "62f1a0c3e4b0f8a1d23c4b5e",
+          },
+          title: {
+            type: "string",
+            description: "Post title",
+            example: "My first post",
+          },
+          content: {
+            type: "string",
+            description: "Post body content",
+            example: "Hello, world!",
+          },
+          createdAt: {
+            type: "string",
+            format: "date-time",
+            example: "2025-06-15T15:00:00.000Z",
+          },
+          updatedAt: {
+            type: "string",
+            format: "date-time",
+            example: "2025-06-15T16:00:00.000Z",
+          },
+        },
+      },
     },
   },
 };
