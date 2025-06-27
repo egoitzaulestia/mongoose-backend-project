@@ -1,9 +1,11 @@
 const basicInfo = require("./basicinfo");
 const components = require("./components");
-const user = require("./user");
+const users = require("./users");
+const posts = require("./posts");
 
 module.exports = {
   ...basicInfo,
-  ...user,
+  ...users,
+  ...posts,
   ...components,
 };

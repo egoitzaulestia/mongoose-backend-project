@@ -164,6 +164,21 @@ module.exports = {
           },
         },
       },
+
+      PostWithComments: {
+        allOf: [
+          { $ref: "#/components/schemas/Post" },
+          {
+            type: "object",
+            properties: {
+              comments: {
+                type: "array",
+                items: { $ref: "#/components/schemas/Comment" },
+              },
+            },
+          },
+        ],
+      },
     },
   },
 };
