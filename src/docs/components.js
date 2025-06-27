@@ -67,6 +67,7 @@ module.exports = {
           },
         },
       },
+
       // -------- POST --------
       Post: {
         type: "object",
@@ -101,6 +102,44 @@ module.exports = {
             type: "string",
             format: "date-time",
             example: "2025-06-15T16:00:00.000Z",
+          },
+        },
+      },
+
+      // -------- COMMENT --------
+      Comment: {
+        type: "object",
+        properties: {
+          _id: {
+            type: "string",
+            format: "uuid",
+            description: "Comment unique identifier",
+            example: "62f3c2d6e5f2c0b3d45e6f7a",
+          },
+          postId: {
+            type: "string",
+            description: "ID of the post this comment belongs to",
+            example: "62f2b1c5d4e1b9a2c34d5e6f",
+          },
+          author: {
+            type: "string",
+            description: "User _id of the commenter",
+            example: "62f1a0c3e4b0f8a1d23c4b5e",
+          },
+          content: {
+            type: "string",
+            description: "The text of the comment",
+            example: "Great post, thanks for sharing!",
+          },
+          createdAt: {
+            type: "string",
+            format: "date-time",
+            example: "2025-06-15T15:30:00.000Z",
+          },
+          updatedAt: {
+            type: "string",
+            format: "date-time",
+            example: "2025-06-15T15:45:00.000Z",
           },
         },
       },
