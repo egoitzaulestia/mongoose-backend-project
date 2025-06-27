@@ -5,7 +5,9 @@ const posts = require("./posts");
 
 module.exports = {
   ...basicInfo,
-  ...users,
-  ...posts,
   ...components,
+  paths: {
+    ...users.paths,
+    ...posts.paths,
+  },
 };
