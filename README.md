@@ -13,6 +13,7 @@ A comprehensive REST API for a social media platform built with Node.js, Express
 - [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Environment Variables](#environment-variables)
+- [API Documentation](#api-documentation)
 - [API Endpoints](#api-endpoints)
 - [Authentication](#authentication)
 - [File Uploads](#file-uploads)
@@ -33,6 +34,7 @@ A comprehensive REST API for a social media platform built with Node.js, Express
 - **File Uploads**: Image uploads for posts, comments, and user profiles
 - **Pagination**: Efficient data loading with 10 items per page
 - **Search Functionality**: Search posts and users by name or ID
+- **API Documentation**: Interactive Swagger UI with comprehensive endpoint documentation
 
 ### Security Features
 
@@ -49,6 +51,7 @@ A comprehensive REST API for a social media platform built with Node.js, Express
 - **File Upload**: Multer middleware
 - **Email Service**: Nodemailer
 - **Validation**: Validator.js
+- **API Documentation**: Swagger/OpenAPI 3.0
 - **Environment Management**: Dotenv
 - **Deployment**: Docker, Render, MongoDB Atlas
 
@@ -64,6 +67,13 @@ src/
 │   ├── HomeController.js     # Welcome/API info
 │   ├── PostController.js
 │   └── UserController.js
+├── docs/
+│   ├── basicinfo.js          # Basic API information
+│   ├── comments.js           # Comment endpoints documentation
+│   ├── components.js         # Reusable Swagger components
+│   ├── index.js              # Main Swagger configuration
+│   ├── posts.js              # Post endpoints documentation
+│   └── users.js              # User endpoints documentation
 ├── middlewares/
 │   ├── authentication.js     # JWT authentication
 │   ├── authorship.js         # Content ownership verification
@@ -159,6 +169,34 @@ JWT_SECRET=
 EMAIL_USER=
 EMAIL_PASS=
 ```
+
+## 📚 API Documentation
+
+### Interactive Documentation
+
+The API is fully documented using **Swagger/OpenAPI 3.0**. You can explore and test all endpoints interactively through the Swagger UI:
+
+**Swagger UI**: [https://mongoose-backend-project.onrender.com/api-docs](https://mongoose-backend-project.onrender.com/api-docs)
+
+### Documentation Features
+
+- **Complete endpoint coverage**: All API endpoints are documented with detailed descriptions
+- **Request/Response schemas**: Full schema definitions for all data models
+- **Interactive testing**: Test endpoints directly from the documentation
+- **Authentication examples**: Clear examples of how to authenticate requests
+- **Error response documentation**: Comprehensive error handling examples
+- **Pagination details**: Documentation of pagination parameters and responses
+
+### Swagger Configuration
+
+The documentation is organized into several modules:
+
+- **Basic Info**: API metadata, contact information, and general description
+- **Components**: Reusable schemas for User, Post, Comment, and response models
+- **Endpoints**: Detailed documentation for all API routes grouped by functionality
+  - User management and authentication
+  - Post operations and interactions
+  - Comment management and interactions
 
 ## 📚 API Endpoints
 
@@ -340,6 +378,7 @@ CMD ["node", "index.js"]
 
 Test the API endpoints using tools like:
 
+- **Swagger UI**: Interactive documentation at `/api-docs` endpoint
 - **Postman**: Import the API collection
 - **cURL**: Command-line testing
 
