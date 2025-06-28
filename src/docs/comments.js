@@ -45,7 +45,6 @@ module.exports = {
       },
     },
 
-    // src/doc/comments.js
     "/comments/detailed": {
       get: {
         tags: ["Comments"],
