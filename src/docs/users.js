@@ -200,7 +200,6 @@ module.exports = {
                     type: "string",
                     enum: ["user", "admin", "superadmin"],
                   },
-                  // etc. only include updatable fields
                 },
               },
             },
