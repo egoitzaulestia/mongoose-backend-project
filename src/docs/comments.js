@@ -45,83 +45,26 @@ module.exports = {
       },
     },
 
-    // "/comments/detailed": {
-    //   get: {
-    //     tags: ["Comments"],
-    //     summary: "List detailed comments",
-    //     description:
-    //       "Returns each comment + its author + parent post + post’s author + users who liked it. (Protected)",
-    //     security: [{ ApiKeyAuth: [] }],
-    //     parameters: [
-    //       {
-    //         name: "page",
-    //         in: "query",
-    //         schema: { type: "integer", default: 1 },
-    //       },
-    //       {
-    //         name: "limit",
-    //         in: "query",
-    //         schema: { type: "integer", default: 10 },
-    //       },
-    //     ],
-    //     responses: {
-    //       200: {
-    //         description: "Paginated detailed comments",
-    //         content: {
-    //           "application/json": {
-    //             schema: {
-    //               type: "object",
-    //               properties: {
-    //                 total: { type: "integer" },
-    //                 page: { type: "integer" },
-    //                 pages: { type: "integer" },
-    //                 comments: {
-    //                   type: "array",
-    //                   items: {
-    //                     type: "object",
-    //                     properties: {
-    //                       .../* fields of Comment */,
-    //                       author: { $ref: "#/components/schemas/User" },
-    //                       postId: {
-    //                         type: "object",
-    //                         properties: {
-    //                           _id: {
-    //                             type: "string",
-    //                             pattern: "^[0-9a-fA-F]{24}$",
-    //                           },
-    //                           title: { type: "string" },
-    //                           author: { $ref: "#/components/schemas/User" },
-    //                         },
-    //                       },
-    //                       likes: {
-    //                         type: "array",
-    //                         items: {
-    //                           type: "object",
-    //                           properties: {
-    //                             userId: { $ref: "#/components/schemas/User" },
-    //                             createdAt: {
-    //                               type: "string",
-    //                               format: "date-time",
-    //                             },
-    //                           },
-    //                         },
-    //                       },
-    //                     },
-    //                   },
-    //                 },
-    //               },
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   },
-    // },
-
     // src/doc/comments.js
     "/comments/detailed": {
       get: {
-        // …
+        tags: ["Comments"],
+        summary: "List detailed comments",
+        description:
+          "Returns each comment + its author + parent post + post’s author + users who liked it. (Protected)",
+        security: [{ ApiKeyAuth: [] }],
+        parameters: [
+          {
+            name: "page",
+            in: "query",
+            schema: { type: "integer", default: 1 },
+          },
+          {
+            name: "limit",
+            in: "query",
+            schema: { type: "integer", default: 10 },
+          },
+        ],
         responses: {
           200: {
             description: "Paginated detailed comments",
