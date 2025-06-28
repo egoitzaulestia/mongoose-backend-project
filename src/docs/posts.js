@@ -155,22 +155,22 @@ module.exports = {
     /////////////
     // "/posts/full": {
     //   get: {
-    //     tags: ["Posts"],
-    //     summary: "List posts with their comments",
-    //     description:
-    //       "Returns posts including nested comments and authors. Paginated.",
-    //     parameters: [
-    //       {
-    //         name: "page",
-    //         in: "query",
-    //         schema: { type: "integer", default: 1 },
-    //       },
-    //       {
-    //         name: "limit",
-    //         in: "query",
-    //         schema: { type: "integer", default: 10 },
-    //       },
-    //     ],
+    // tags: ["Posts"],
+    // summary: "List posts with their comments",
+    // description:
+    //   "Returns posts including nested comments and authors. Paginated.",
+    // parameters: [
+    //   {
+    //     name: "page",
+    //     in: "query",
+    //     schema: { type: "integer", default: 1 },
+    //   },
+    //   {
+    //     name: "limit",
+    //     in: "query",
+    //     schema: { type: "integer", default: 10 },
+    //   },
+    // ],
     //     responses: {
     //       200: {
     //         description: "Posts + comments + nested authors",
@@ -197,7 +197,22 @@ module.exports = {
 
     "/posts/full": {
       get: {
-        // …
+        tags: ["Posts"],
+        summary: "List posts with their comments",
+        description:
+          "Returns posts including nested comments and authors. Paginated.",
+        parameters: [
+          {
+            name: "page",
+            in: "query",
+            schema: { type: "integer", default: 1 },
+          },
+          {
+            name: "limit",
+            in: "query",
+            schema: { type: "integer", default: 10 },
+          },
+        ],
         responses: {
           200: {
             description: "Posts + comments + nested authors",
