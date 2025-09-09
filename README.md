@@ -1,4 +1,4 @@
-# Social Media Backend API
+# The Social Network — Backend API
 
 A comprehensive REST API for a social media platform built with Node.js, Express, and MongoDB. This project provides complete backend functionality for user management, posts, comments, likes, and social features like following users.
 
