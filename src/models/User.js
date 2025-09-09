@@ -85,12 +85,42 @@ UserSchema.index({
   name: "text",
 });
 
-// We avoid returning tokens array and password
+UserSchema.set("toJSON", { virtuals: true }); // if you use virtuals elsewhere
+
 UserSchema.methods.toJSON = function () {
-  const userObject = this.toObject(); // This is safer than accessing ._doc directly
-  delete userObject.tokens;
-  delete userObject.password;
-  return userObject;
+  const obj = this.toObject({ virtuals: true });
+  delete obj.password;
+  delete obj.tokens;
+  delete obj.__v;
+  return obj;
+};
+
+UserSchema.methods.toSafe = function () {
+  const {
+    _id,
+    name,
+    email,
+    role,
+    photoUrl,
+    confirmed,
+    followers,
+    following,
+    createdAt,
+    updatedAt,
+  } = this;
+
+  return {
+    id: _id.toString(),
+    name,
+    email,
+    role,
+    photoUrl,
+    confirmed,
+    followersCount: followers?.length ?? 0,
+    followingCount: following?.length ?? 0,
+    createdAt: createdAt?.toISOString?.() ?? createdAt, // nice clean ISO
+    updatedAt: updatedAt?.toISOString?.() ?? updatedAt,
+  };
 };
 
 const User = mongoose.model("User", UserSchema);

@@ -115,7 +115,11 @@ const UserController = {
       // user.tokens = [...user.tokens, token].slice(-3); // Othre option to story the token in the array
       await user.save();
 
-      res.status(200).send({ message: `Welcome ${user.name} :)`, token });
+      res.status(200).send({
+        message: `Welcome ${user.name} :)`,
+        user: user.toSafe(),
+        token,
+      });
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Login error", error });
