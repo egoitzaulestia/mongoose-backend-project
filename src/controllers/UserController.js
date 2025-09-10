@@ -126,29 +126,51 @@ const UserController = {
     }
   },
 
+  // async logout(req, res) {
+  //   try {
+  //     // Normalize the token
+  //     const rawToken = req.headers.authorization || "";
+  //     const token = rawToken.replace(/^Bearer\s+/i, "");
+
+  //     // Romove the token from the tokens array
+  //     const result = await User.findByIdAndUpdate(
+  //       { _id: req.user._id },
+  //       { $pull: { tokens: token } }
+  //     );
+
+  //     // Check if tokens array has been modified
+  //     if (result.modifiedCount === 0) {
+  //       return res.status(400).send({
+  //         message: "You were already logged out or token not found",
+  //       });
+  //     }
+
+  //     res.status(200).send({ message: `Goodbye ${req.user.name} !` });
+  //   } catch (error) {
+  //     console.error(error);
+  //     res
+  //       .status(500)
+  //       .send({ message: "There was a problem trying to log out." });
+  //   }
+  // },
+
+  // controllers/UserController.js
   async logout(req, res) {
     try {
-      // Normalize the token
-      const rawToken = req.headers.authorization || "";
-      const token = rawToken.replace(/^Bearer\s+/i, "");
-
-      // Romove the token from the tokens array
-      const result = await User.findByIdAndUpdate(
+      const result = await User.updateOne(
         { _id: req.user._id },
-        { $pull: { tokens: token } }
+        { $pull: { tokens: req.token } }
       );
 
-      // Check if tokens array has been modified
       if (result.modifiedCount === 0) {
-        return res.status(400).send({
-          message: "You were already logged out or token not found",
-        });
+        // token not found or already removed → still OK for idempotent logout
+        return res.status(200).send({ message: "Already logged out" });
       }
 
-      res.status(200).send({ message: `Goodbye ${req.user.name} !` });
+      return res.status(200).send({ message: `Goodbye ${req.user.name}!` });
     } catch (error) {
       console.error(error);
-      res
+      return res
         .status(500)
         .send({ message: "There was a problem trying to log out." });
     }
