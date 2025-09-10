@@ -23,21 +23,20 @@ const allowed = new Set([
   // 'https://your-frontend-domain.com', // add when you deploy
 ]);
 
-app.use(
-  cors({
-    origin(origin, cb) {
-      if (!origin) return cb(null, true); // allow curl/Postman
-      return allowed.has(origin)
-        ? cb(null, true)
-        : cb(new Error("Not allowed by CORS"));
-    },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    optionsSuccessStatus: 204, // important for some browsers
-  })
-);
+const corsOptions = {
+  origin(origin, cb) {
+    if (!origin) return cb(null, true); // allow curl/Postman
+    cb(null, allowed.has(origin)); // true → set CORS headers
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+
 // explicitly handle preflight for all routes
-app.options("*", cors());
+// app.options("*", cors());
 
 app.use(express.json());
 
