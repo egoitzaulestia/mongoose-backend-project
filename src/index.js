@@ -16,25 +16,28 @@ const PORT = process.env.PORT || 3001;
 
 // —— CORS ——
 // While frontend is not deployed, allow Vite dev. We add our prod domain later.
-const allowedOrigins = [
+// allow local Vite and (optionally) your deployed frontend
+const allowed = new Set([
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  // 'https://your-frontend-domain.com', // we add it when we deploy the frontend
-];
+  // 'https://your-frontend-domain.com', // add when you deploy
+]);
 
 app.use(
   cors({
     origin(origin, cb) {
-      // allow non-browser tools (no Origin header) like curl/Postman
-      if (!origin) return cb(null, true);
-      return allowedOrigins.includes(origin)
+      if (!origin) return cb(null, true); // allow curl/Postman
+      return allowed.has(origin)
         ? cb(null, true)
         : cb(new Error("Not allowed by CORS"));
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    optionsSuccessStatus: 204, // important for some browsers
   })
 );
+// explicitly handle preflight for all routes
+app.options("*", cors());
 
 app.use(express.json());
 
