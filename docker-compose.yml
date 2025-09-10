@@ -1,25 +1,63 @@
-version: "3.6"
+# version: "3.6"
+# services:
+#   api:
+#     container_name: api
+#     build:
+#       context: ./
+#       dockerfile: Dockerfile
+#     volumes:
+#       - ./src:/root/src
+#     healthcheck:
+#       disable: true
+#     restart: unless-stopped
+#     ports:
+#       - 3000:3000
+#     tty: true
+#     env_file: .env
+#   db:
+#     image: mongo:latest
+#     ports:
+#       - 27017:27017
+#     env_file: .env
+#     environment:
+#       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+#       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+#       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+
+version: "3.8"
+
 services:
   api:
-    container_name: api
+    container_name: mongoose-backend-project-api
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
-    volumes:
-      - ./src:/root/src
-    healthcheck:
-      disable: true
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      - PORT=3000
+      # Build a proper MONGO_URI that points to the "db" service
+      - MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@db:27017/${MONGO_INITDB_DATABASE}?authSource=admin
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_ENV=production
+    depends_on:
+      - db
     restart: unless-stopped
-    ports:
-      - 3000:3000
-    tty: true
-    env_file: .env
+    # ⚠️ No bind mount over /app — keeps node_modules available inside the container
+
   db:
-    image: mongo:latest
+    image: mongo:6
+    container_name: db-1
     ports:
-      - 27017:27017
-    env_file: .env
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
