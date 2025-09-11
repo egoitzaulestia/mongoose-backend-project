@@ -10,51 +10,6 @@ const transporter = require("../config/nodemailer");
 //TO DO -> work in validtions (404, etc.) ...
 const UserController = {
   // Registration (with optional photo upload)
-  // async register(req, res, next) {
-  //   try {
-  //     // hash the password
-  //     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-  //     // build the new user payload
-  //     const newUserData = {
-  //       ...req.body,
-  //       password: hashedPassword,
-  //       role: "user",
-  //       confirmed: false,
-  //     };
-
-  //     // if multer saw a file, add its URL
-  //     if (req.file) {
-  //       newUserData.photoUrl = `/uploads/${req.file.filename}`;
-  //     }
-
-  //     const user = await User.create(newUserData);
-
-  //     // send email confirmation
-  //     const emailToken = jwt.sign({ email: user.email }, JWT_SECRET, {
-  //       expiresIn: "48h",
-  //     });
-  //     const url = `http://localhost:3000/users/confirm/${emailToken}`;
-
-  //     await transporter.sendMail({
-  //       to: user.email,
-  //       subject: "Confirm your registration",
-  //       html: `
-  //         <h3>Welcome, ${user.name}</h3>
-  //         <p>Click <a href="${url}">here</a> to confirm your account.</p>
-  //       `,
-  //     });
-
-  //     res.status(201).json({
-  //       message: "User registered successfully",
-  //       user, // thanks to toJSON(), no password or tokens leak out
-  //     });
-  //   } catch (error) {
-  //     error.origin = "user";
-  //     next(error);
-  //   }
-  // },
-
   async register(req, res, next) {
     try {
       // hash the password
@@ -107,42 +62,6 @@ const UserController = {
     }
   },
 
-  // async confirm(req, res) {
-  //   try {
-  //     const token = req.params.emailToken;
-  //     const payload = jwt.verify(token, JWT_SECRET);
-
-  //     // Find the user by email and update the 'confirmed' field
-  //     const user = await User.findOneAndUpdate(
-  //       { email: payload.email },
-  //       { confirmed: true },
-  //       { new: true } // returns the updated document
-  //     );
-
-  //     if (!user) {
-  //       return res.status(404).send({ message: "User not found" });
-  //     }
-
-  //     res.status(200).send({ message: "User confirmed successfully" });
-  //     // } catch (error) {
-  //     //   console.error(error);
-  //     //   res.status(500).send({
-  //     //     message: "Error while confirming by email",
-  //     //     error,
-  //     //   });
-  //     // }
-  //   } catch (error) {
-  //     if (
-  //       error.name === "TokenExpiredError" ||
-  //       error.name === "JsonWebTokenError"
-  //     ) {
-  //       return res
-  //         .status(400)
-  //         .send({ message: "Invalid or expired confirmation link" });
-  //     }
-  //     res.status(500).send({ message: "Error while confirming by email" });
-  //   }
-  // },
   async confirm(req, res) {
     try {
       const token = req.params.emailToken; // /users/confirm/:emailToken
