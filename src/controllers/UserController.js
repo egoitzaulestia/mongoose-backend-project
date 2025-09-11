@@ -4,6 +4,7 @@ const Comment = require("../models/Comment");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 const transporter = require("../config/nodemailer");
 
 //TO DO -> work in validtions (404, etc.) ...
@@ -54,29 +55,70 @@ const UserController = {
     }
   },
 
+  // async confirm(req, res) {
+  //   try {
+  //     const token = req.params.emailToken;
+  //     const payload = jwt.verify(token, JWT_SECRET);
+
+  //     // Find the user by email and update the 'confirmed' field
+  //     const user = await User.findOneAndUpdate(
+  //       { email: payload.email },
+  //       { confirmed: true },
+  //       { new: true } // returns the updated document
+  //     );
+
+  //     if (!user) {
+  //       return res.status(404).send({ message: "User not found" });
+  //     }
+
+  //     res.status(200).send({ message: "User confirmed successfully" });
+  //     // } catch (error) {
+  //     //   console.error(error);
+  //     //   res.status(500).send({
+  //     //     message: "Error while confirming by email",
+  //     //     error,
+  //     //   });
+  //     // }
+  //   } catch (error) {
+  //     if (
+  //       error.name === "TokenExpiredError" ||
+  //       error.name === "JsonWebTokenError"
+  //     ) {
+  //       return res
+  //         .status(400)
+  //         .send({ message: "Invalid or expired confirmation link" });
+  //     }
+  //     res.status(500).send({ message: "Error while confirming by email" });
+  //   }
+  // },
   async confirm(req, res) {
     try {
-      const token = req.params.emailToken;
-      const payload = jwt.verify(token, JWT_SECRET);
+      const token = req.params.emailToken; // /users/confirm/:emailToken
+      const payload = jwt.verify(token, JWT_SECRET); // throws on invalid/expired
 
-      // Find the user by email and update the 'confirmed' field
+      // confirm only if not already confirmed
       const user = await User.findOneAndUpdate(
         { email: payload.email },
-        { confirmed: true },
-        { new: true } // returns the updated document
+        { $set: { confirmed: true } },
+        { new: true }
       );
 
-      if (!user) {
-        return res.status(404).send({ message: "User not found" });
-      }
+      if (!user) return res.status(404).send({ message: "User not found" });
 
-      res.status(200).send({ message: "User confirmed successfully" });
+      return res.status(200).send({ message: "User confirmed successfully" });
     } catch (error) {
+      if (
+        error.name === "TokenExpiredError" ||
+        error.name === "JsonWebTokenError"
+      ) {
+        return res
+          .status(400)
+          .send({ message: "Invalid or expired confirmation link" });
+      }
       console.error(error);
-      res.status(500).send({
-        message: "Error while confirming by email",
-        error,
-      });
+      return res
+        .status(500)
+        .send({ message: "Error while confirming by email" });
     }
   },
 
