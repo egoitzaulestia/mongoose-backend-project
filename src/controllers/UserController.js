@@ -10,6 +10,51 @@ const transporter = require("../config/nodemailer");
 //TO DO -> work in validtions (404, etc.) ...
 const UserController = {
   // Registration (with optional photo upload)
+  // async register(req, res, next) {
+  //   try {
+  //     // hash the password
+  //     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+  //     // build the new user payload
+  //     const newUserData = {
+  //       ...req.body,
+  //       password: hashedPassword,
+  //       role: "user",
+  //       confirmed: false,
+  //     };
+
+  //     // if multer saw a file, add its URL
+  //     if (req.file) {
+  //       newUserData.photoUrl = `/uploads/${req.file.filename}`;
+  //     }
+
+  //     const user = await User.create(newUserData);
+
+  //     // send email confirmation
+  //     const emailToken = jwt.sign({ email: user.email }, JWT_SECRET, {
+  //       expiresIn: "48h",
+  //     });
+  //     const url = `http://localhost:3000/users/confirm/${emailToken}`;
+
+  //     await transporter.sendMail({
+  //       to: user.email,
+  //       subject: "Confirm your registration",
+  //       html: `
+  //         <h3>Welcome, ${user.name}</h3>
+  //         <p>Click <a href="${url}">here</a> to confirm your account.</p>
+  //       `,
+  //     });
+
+  //     res.status(201).json({
+  //       message: "User registered successfully",
+  //       user, // thanks to toJSON(), no password or tokens leak out
+  //     });
+  //   } catch (error) {
+  //     error.origin = "user";
+  //     next(error);
+  //   }
+  // },
+
   async register(req, res, next) {
     try {
       // hash the password
@@ -28,30 +73,37 @@ const UserController = {
         newUserData.photoUrl = `/uploads/${req.file.filename}`;
       }
 
+      // create user in DB
       const user = await User.create(newUserData);
 
-      // send email confirmation
+      // create email-confirmation token
       const emailToken = jwt.sign({ email: user.email }, JWT_SECRET, {
         expiresIn: "48h",
       });
-      const url = `http://localhost:3000/users/confirm/${emailToken}`;
+
+      // send email confirmation
+      const confirmUrl = `${FRONTEND_URL}/confirm/${emailToken}`;
 
       await transporter.sendMail({
         to: user.email,
         subject: "Confirm your registration",
+        // include a plain text fallback if you want
+        text: `Welcome, ${user.name}. Confirm your account: ${confirmUrl}`,
         html: `
           <h3>Welcome, ${user.name}</h3>
-          <p>Click <a href="${url}">here</a> to confirm your account.</p>
+          <p>Click <a href="${confirmUrl}">here</a> to confirm your account.</p>
+          <p>If the button doesn't work, copy and paste this URL into your browser:</p>
+          <code>${confirmUrl}</code>
         `,
       });
 
-      res.status(201).json({
-        message: "User registered successfully",
-        user, // thanks to toJSON(), no password or tokens leak out
+      return res.status(201).json({
+        message: "User registered successfully. Check your email to confirm.",
+        user, // your toJSON() already strips sensitive fields
       });
     } catch (error) {
       error.origin = "user";
-      next(error);
+      return next(error);
     }
   },
 
