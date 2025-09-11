@@ -123,6 +123,131 @@ UserSchema.methods.toSafe = function () {
   };
 };
 
+// const UserSchema = new mongoose.Schema(
+//   {
+//     handle: {
+//       type: String,
+//       required: true,
+//       unique: true,
+//       trim: true,
+//       minlength: 3,
+//       maxlength: 30,
+//       match: /^[a-z0-9_]+$/i,
+//     },
+//     name: { type: String, required: true, trim: true },
+//     email: {
+//       type: String,
+//       required: true,
+//       unique: true,
+//       lowercase: true,
+//       validate: {
+//         validator: isEmail,
+//         message: (props) => `${props.value} is not a valid email`,
+//       },
+//     },
+//     password: { type: String, required: true, minlength: 6, select: false },
+//     passwordChangedAt: { type: Date },
+
+//     age: { type: Number, required: true, min: 0 },
+
+//     photoUrl: { type: String, trim: true, default: "" },
+//     bannerUrl: { type: String, trim: true, default: "" },
+
+//     bio: { type: String, maxlength: 280 },
+//     location: { type: String, maxlength: 80 },
+//     website: { type: String, trim: true },
+
+//     role: {
+//       type: String,
+//       enum: ["user", "admin", "superadmin"],
+//       default: "user",
+//       required: true,
+//     },
+//     confirmed: { type: Boolean, default: false },
+
+//     // prefer refresh tokens (hashed) rather than access tokens
+//     tokens: { type: [String], default: [] },
+
+//     // If you keep these for now, expect to migrate to a Follow collection later
+//     following: [{ type: ObjectId, ref: "User" }],
+//     followers: [{ type: ObjectId, ref: "User" }],
+
+//     // fast counters (optional, but great for feeds & profiles)
+//     followersCount: { type: Number, default: 0 },
+//     followingCount: { type: Number, default: 0 },
+//     postsCount: { type: Number, default: 0 },
+
+//     isActive: { type: Boolean, default: true },
+//     suspendedUntil: { type: Date },
+//     deletedAt: { type: Date },
+
+//     passwordResetToken: { type: String },
+//     passwordResetExpires: { type: Date },
+
+//     settings: {
+//       theme: {
+//         type: String,
+//         enum: ["light", "dark", "system"],
+//         default: "system",
+//       },
+//       language: { type: String, default: "en" },
+//       emailNotifications: { type: Boolean, default: true },
+//     },
+//   },
+//   { timestamps: true }
+// );
+
+// // Indexes
+// UserSchema.index({ name: "text", handle: "text", bio: "text" });
+// UserSchema.index(
+//   { handle: 1 },
+//   { unique: true, collation: { locale: "en", strength: 2 } }
+// );
+// UserSchema.index({ email: 1 }, { unique: true });
+
+// // Safe JSON
+// UserSchema.methods.toJSON = function () {
+//   const obj = this.toObject();
+//   delete obj.password;
+//   delete obj.tokens;
+//   delete obj.__v;
+//   return obj;
+// };
+
+// UserSchema.methods.toSafe = function () {
+//   const {
+//     _id,
+//     handle,
+//     name,
+//     email,
+//     role,
+//     photoUrl,
+//     confirmed,
+//     followersCount,
+//     followingCount,
+//     postsCount,
+//     createdAt,
+//     updatedAt,
+//   } = this;
+//   return {
+//     id: _id.toString(),
+//     handle,
+//     name,
+//     email,
+//     role,
+//     photoUrl,
+//     confirmed,
+//     followersCount,
+//     followingCount,
+//     postsCount,
+//     createdAt: createdAt?.toISOString?.() ?? createdAt,
+//     updatedAt: updatedAt?.toISOString?.() ?? updatedAt,
+//   };
+// };
+
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;
+
+/////////////////////////////
+/////////////////////////////
