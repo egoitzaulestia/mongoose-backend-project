@@ -9,6 +9,7 @@ const { typeError } = require("./middlewares/typeError");
 const docs = require("./docs/index");
 
 const app = express();
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 const PORT = process.env.PORT || 3001;
 
 // // If we plan to use secure cookies/session behind Render’s proxy later:
@@ -20,7 +21,7 @@ const PORT = process.env.PORT || 3001;
 const allowed = new Set([
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  // 'https://your-frontend-domain.com', // add when you deploy
+  FRONTEND_URL, // add when you deploy
 ]);
 
 const corsOptions = {
