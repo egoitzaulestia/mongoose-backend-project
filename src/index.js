@@ -21,7 +21,9 @@ const PORT = process.env.PORT || 3001;
 const allowed = new Set([
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  FRONTEND_URL, // add when you deploy
+  "https://the-social-network-two.vercel.app",
+  "https://the-social-network-git-main-egoitzaulestias-projects.vercel.app",
+  "https://the-social-network-26pyedk93-egoitzaulestias-projects.vercel.app",
 ]);
 
 const corsOptions = {
