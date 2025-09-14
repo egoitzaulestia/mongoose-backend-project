@@ -57,39 +57,73 @@ const PostController = {
     }
   },
 
+  // async getAllWithCommonts(req, res) {
+  //   try {
+  //     const { page = 1, limit = 10 } = req.query;
+  //     const skip = (page - 1) * limit;
+  //     const perPage = parseInt(limit);
+
+  //     // Total count (for pagaination metadata)
+  //     const total = await Post.countDocuments();
+
+  //     // Fetch posts + populate author + comments + comment authors
+  //     const posts = await Post.find()
+  //       .sort({ createdAt: -1 })
+  //       .skip(skip)
+  //       .limit(perPage)
+  //       .populate("author", "name email") // post author
+  //       .populate({
+  //         path: "comments",
+  //         option: { sort: { createdAt: -1 } },
+  //         populate: {
+  //           // nested populate
+  //           path: "author",
+  //           select: "name email",
+  //         },
+  //       });
+
+  //     return res.json({
+  //       total,
+  //       page: parseInt(page),
+  //       pages: Math.ceil(total / perPage),
+  //       posts,
+  //     });
+  //   } catch (error) {
+  //     console.error("getAllWithComment error:", error);
+  //     return res.status(500).json({
+  //       message: "Server error loading posts with comments",
+  //     });
+  //   }
+  // },
+
   async getAllWithCommonts(req, res) {
     try {
-      const { page = 1, limit = 10 } = req.query;
-      const skip = (page - 1) * limit;
-      const perPage = parseInt(limit);
+      const pageNum = parseInt(req.query.page, 10) || 1;
+      const perPage = parseInt(req.query.limit, 10) || 10;
+      const skip = (pageNum - 1) * perPage;
 
-      // Total count (for pagaination metadata)
       const total = await Post.countDocuments();
 
-      // Fetch posts + populate author + comments + comment authors
-      const posts = await Post.find()
+      const posts = await Post.find({})
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(perPage)
-        .populate("author", "name email") // post author
+        .populate("author", "name email photoUrl") // include photo if you like
         .populate({
           path: "comments",
-          option: { sort: { createdAt: -1 } },
-          populate: {
-            // nested populate
-            path: "author",
-            select: "name email",
-          },
-        });
+          options: { sort: { createdAt: -1 } }, // sort comments by newest first
+          populate: { path: "author", select: "name email photoUrl" },
+        })
+        .lean(); // send plain objects
 
       return res.json({
         total,
-        page: parseInt(page),
+        page: pageNum,
         pages: Math.ceil(total / perPage),
         posts,
       });
     } catch (error) {
-      console.error("getAllWithComment error:", error);
+      console.error("getAllWithCommonts error:", error);
       return res.status(500).json({
         message: "Server error loading posts with comments",
       });
