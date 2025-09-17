@@ -190,27 +190,64 @@ const PostController = {
   },
 
   async getByTitle(req, res) {
+    // try {
+    //   if (req.params.title.length > 150) {
+    //     return res.status(400).send({ message: "Too long search..." });
+    //   }
+    //   //   const posts = await Post.find({
+    //   //     $text: {
+    //   //       $search: `"${req.params.title}"`,
+    //   //     },
+    //   //   });
+
+    //   const posts = await Post.find({
+    //     title: { $regex: req.params.title, $options: "i" },
+    //   });
+
+    //   res.status(200).send(posts);
+    // } catch (error) {
+    //   console.error(error);
+    //   res.status(500).send({
+    //     message: "Server error while shearching titles",
+    //     error,
+    //   });
+    // }
     try {
-      if (req.params.title.length > 150) {
-        return res.status(400).send({ message: "Too long search..." });
+      const qRaw = req.params.title || "";
+      const q = qRaw.trim();
+
+      if (q.length > 150) {
+        return res.status(400).json({ message: "Too long search..." });
       }
-      //   const posts = await Post.find({
-      //     $text: {
-      //       $search: `"${req.params.title}"`,
-      //     },
-      //   });
 
-      const posts = await Post.find({
-        title: { $regex: req.params.title, $options: "i" },
+      const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 10;
+      const skip = (page - 1) * limit;
+
+      // case-insensitive regex search on title
+      const filter = q ? { title: { $regex: q, $options: "i" } } : {};
+
+      const [total, posts] = await Promise.all([
+        Post.countDocuments(filter),
+        Post.find(filter)
+          .sort({ createdAt: -1 }) // ⬅️ newest first
+          .skip(skip)
+          .limit(limit)
+          .populate("author", "name email photoUrl")
+          .lean(),
+      ]);
+
+      return res.json({
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+        posts,
       });
-
-      res.status(200).send(posts);
     } catch (error) {
-      console.error(error);
-      res.status(500).send({
-        message: "Server error while shearching titles",
-        error,
-      });
+      console.error("getByTitle error:", error);
+      return res
+        .status(500)
+        .json({ message: "Server error while searching titles" });
     }
   },
 
