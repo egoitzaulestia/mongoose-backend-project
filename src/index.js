@@ -28,7 +28,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "folder-name",
+    folder: "the-social-network-photo-folder", // The name of the folder in Cloudinary
   },
 });
 
