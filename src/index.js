@@ -4,6 +4,10 @@ const path = require("path");
 const cors = require("cors");
 const swaggerUI = require("swagger-ui-express");
 
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const multer = require("multer");
+
 const { dbConnection } = require("./config/db");
 const { typeError } = require("./middlewares/typeError");
 const docs = require("./docs/index");
@@ -14,6 +18,19 @@ const PORT = process.env.PORT || 3001;
 
 // // If we plan to use secure cookies/session behind Render’s proxy later:
 // app.set('trust proxy', 1);
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "folder-name",
+  },
+});
 
 // —— CORS ——
 // While frontend is not deployed, allow Vite dev. We add our prod domain later.
