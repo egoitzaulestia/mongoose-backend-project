@@ -32,6 +32,12 @@ const storage = new CloudinaryStorage({
   },
 });
 
+const upload = multer({ storage });
+app.post("/upload", upload.single("image"), (req, res) => {
+  // 'image' is the name of the form field
+  res.json({ imageUrl: req.file.path });
+});
+
 // —— CORS ——
 // While frontend is not deployed, allow Vite dev. We add our prod domain later.
 // allow local Vite and (optionally) your deployed frontend
